@@ -1,0 +1,23 @@
+---
+language: python
+python:
+  - "2.7"
+
+sudo: false
+
+cache:
+  directories:
+    - node_modules
+
+before_install:
+  - nvm install v6.7.0
+  - nvm use v6.7.0
+
+install:
+  - npm install
+  - pip install -r requirements.txt
+  - fab pip_install_vendor_deps
+
+script:
+  - fab test
+  - ./node_modules/serverless/bin/serverless deploy --stage preprod
