@@ -16,6 +16,25 @@ def pip_install_dep(lib):
 def pip_uninstall_dep(lib):
     local('pip uninstall -t app/vendored/ ' + lib)
 
+def pip_freeze_vendor():
+    packages = []
+    for dirName, subdirList, fileList in os.walk('app/vendored'):
+        if('METADATA' in fileList):
+            with open(dirName + '/METADATA') as data_file:
+                for line in data_file:
+                    versionMatch = re.match('^Version: (.*)$', line)
+                    if(versionMatch):
+                        version = versionMatch.group(1)
+                    nameMatch = re.match('^Name: (.*)$', line)
+                    if(nameMatch):
+                        name = nameMatch.group(1)
+            packages.append(name + '==' + version)
+    
+    with open('./vendor-requirements.txt', 'w') as data_file:
+        data_file.write('\r'.join(packages))
+
+def pip_install_vendor_deps():
+    local('pip install -t app/vendored -r vendor-requirements.txt')                 
 def test():
     local('py.test tests --confcutdir ./')
 
