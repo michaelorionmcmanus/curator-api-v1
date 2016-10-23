@@ -1,0 +1,49 @@
+{
+  "body": null,
+  "resource": "/hello",
+  "requestContext": {
+    "resourceId": "kwxia2",
+    "apiId": "jwnmtm1q86",
+    "resourcePath": "/hello",
+    "httpMethod": "GET",
+    "requestId": "a99f2e0f-9891-11e6-8ad4-257908998968",
+    "accountId": "818443719598",
+    "identity": {
+      "apiKey": "oNHXXUrhhZ3gxcgZRE5rq8EARCGEuuLhIp8AdQq7",
+      "userArn": null,
+      "cognitoAuthenticationType": null,
+      "accessKey": null,
+      "caller": null,
+      "userAgent": "PostmanRuntime/3.0.1",
+      "user": null,
+      "cognitoIdentityPoolId": null,
+      "cognitoIdentityId": null,
+      "cognitoAuthenticationProvider": null,
+      "sourceIp": "173.240.241.213",
+      "accountId": null
+    },
+    "stage": "dev"
+  },
+  "queryStringParameters": null,
+  "httpMethod": "GET",
+  "pathParameters": null,
+  "headers": {
+    "Via": "1.1 d98420743a69852491bbdea73f7680bd.cloudfront.net (CloudFront)",
+    "accept-encoding": "gzip, deflate",
+    "CloudFront-Forwarded-Proto": "https",
+    "X-Forwarded-For": "173.240.241.213, 54.182.214.12",
+    "CloudFront-Viewer-Country": "US",
+    "Accept": "*/*",
+    "User-Agent": "PostmanRuntime/3.0.1",
+    "X-Forwarded-Port": "443",
+    "Host": "jwnmtm1q86.execute-api.us-west-2.amazonaws.com",
+    "X-Forwarded-Proto": "https",
+    "X-Amz-Cf-Id": "RIWeF20_5D2OiU3NFKjpPzlBiKhGvJ1zMIunUyZH-xCRCZ5QiewZFg==",
+    "cache-control": "no-cache",
+    "x-api-key": "oNHXXUrhhZ3gxcgZRE5rq8EARCGEuuLhIp8AdQq7",
+    "Content-Type": "application/json",
+    "Postman-Token": "0e3f656d-2905-48ce-af92-51330c4c64d0"
+  },
+  "stageVariables": null,
+  "path": "/hello"
+}
