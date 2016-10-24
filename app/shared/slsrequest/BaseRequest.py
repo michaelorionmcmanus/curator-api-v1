@@ -1,6 +1,16 @@
+from os.path import dirname, basename, isfile
+import glob
 import os
+import sys
+here = os.path.dirname(os.path.realpath(__file__))
+modelsDir = os.path.join(here, "../../models")
+sys.path = [modelsDir] + sys.path
+sys.path = [os.path.join(here, "../../")] + sys.path
+
 import logging
 import json
+from flywheel import Model, Field, Engine
+from models import *
 
 class BaseRequest(object):
     _methods = {
@@ -15,25 +25,24 @@ class BaseRequest(object):
         logging.basicConfig()
         self.logger = logging.getLogger()
         self.logger.setLevel(logging.INFO)
-
-        # SERVERLESS_PROJECT_NAME = os.environ.get('SERVERLESS_PROJECT')
-        # SERVERLESS_STAGE = os.environ.get('SERVERLESS_STAGE')
-        # CREDENTIALS_TABLE = '-'.join([SERVERLESS_STAGE, SERVERLESS_PROJECT_NAME, 'credentials'])
-        # ACCOUNTS_TABLE = '-'.join([SERVERLESS_STAGE, SERVERLESS_PROJECT_NAME, 'accounts'])
-        # USERS_ACCOUNTS_TABLE = '-'.join([SERVERLESS_STAGE, SERVERLESS_PROJECT_NAME, 'users', 'accounts'])
-        # AAD_USERS_TABLE = '-'.join([SERVERLESS_STAGE, SERVERLESS_PROJECT_NAME, 'aad', 'users'])
-        # SYSTEM_BUCKET = '-'.join([SERVERLESS_STAGE, SERVERLESS_PROJECT_NAME, 'system'])
-        # # It might be better to just inject these "computed" env vars as global env vars... it feels
-        # # a little funny that there are multiple ways to access "environment variables"
-        # self.env = {
-        #     "SERVERLESS_PROJECT_NAME": SERVERLESS_PROJECT_NAME,
-        #     "SERVERLESS_STAGE": SERVERLESS_STAGE,
-        #     "CREDENTIALS_TABLE": CREDENTIALS_TABLE,
-        #     "ACCOUNTS_TABLE": ACCOUNTS_TABLE,
-        #     "USERS_ACCOUNTS_TABLE": USERS_ACCOUNTS_TABLE,
-        #     "AAD_USERS_TABLE": AAD_USERS_TABLE,
-        #     "SYSTEM_BUCKET": SYSTEM_BUCKET
-        # }
+        # Create an engine and connect to an AWS region
+        engine = Engine()
+        if('USE_LOCAL_DB' in os.environ and os.environ['USE_LOCAL_DB'] == 'True'):
+            engine.connect('us-west-2', host='localhost',
+                port=8000,
+                access_key='anything',
+                secret_key='anything',
+                is_secure=False)
+        else:
+            engine.connect_to_region('us-west-2')
+        # auto-magically load and register dynamo db models
+        modelModules = glob.glob(modelsDir+"/*.py")
+        models = [ basename(f)[:-3] for f in modelModules if isfile(f)]
+        for modelName in models:
+            if modelName != '__init__':
+                engine.register(getattr(__import__(modelName), modelName))
+        # Now attach the dynamo db engine for use
+        self.db = engine
 
     def log(self, message):
         self.logger.info(message)

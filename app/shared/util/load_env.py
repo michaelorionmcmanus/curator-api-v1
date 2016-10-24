@@ -29,16 +29,3 @@ def load(aws_profile="default"):
     # Default to "dev" stage.
     os.environ['SERVERLESS_STAGE'] = stage = os.environ.get('SERVERLESS_STAGE') or 'dev'
     os.environ['SERVERLESS_REGION'] = region = os.environ.get('SERVERLESS_REGION') or 'us-west-2'
-    # Inject expected app environment variables
-    # with open('./s-templates.json') as base_template:
-    #     data = json.load(base_template)
-    #     environment_config = data['environment']
-
-    # with open('./_meta/variables/s-variables-' + stage + '.json') as dev_variables:
-    #     data = json.load(dev_variables)
-    #     for k, v in data.iteritems():
-    #         match = re.match('^ENV\.(.*)', k)
-    #         if match:
-    #             variable_key = match.group(1)
-    #             if variable_key in environment_config:
-    #                 os.environ[variable_key] = v

@@ -1,5 +1,7 @@
 {
-  "body": null,
+  "body": {
+    "name": "Some great account"
+  },
   "resource": "/hello",
   "requestContext": {
     "resourceId": "kwxia2",
