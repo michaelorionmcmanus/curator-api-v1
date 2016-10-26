@@ -4,6 +4,9 @@
   },
   "resource": "/hello",
   "requestContext": {
+    "authorizer": {
+      "principalId": "e09a13d3-bd07-426d-98a8-86deeb0796e3"
+    },
     "resourceId": "kwxia2",
     "apiId": "jwnmtm1q86",
     "resourcePath": "/hello",
@@ -27,7 +30,7 @@
     "stage": "dev"
   },
   "queryStringParameters": null,
-  "httpMethod": "GET",
+  "httpMethod": "POST",
   "pathParameters": null,
   "headers": {
     "Via": "1.1 d98420743a69852491bbdea73f7680bd.cloudfront.net (CloudFront)",

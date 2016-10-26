@@ -150,4 +150,5 @@ def debug_func(function_dir, aws_profile="default"):
     # Load the handler as a module.
     module = imp.load_source('handler', function_path)
     result = module.handler(event_data, None)
+    
     print(json.dumps(result, indent=2, sort_keys=True))
