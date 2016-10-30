@@ -1,0 +1,26 @@
+body: {name: Some great account}
+headers: {Accept: '*/*', CloudFront-Forwarded-Proto: https, CloudFront-Viewer-Country: US,
+  Content-Type: application/json, Host: jwnmtm1q86.execute-api.us-west-2.amazonaws.com,
+  Postman-Token: 0e3f656d-2905-48ce-af92-51330c4c64d0, User-Agent: PostmanRuntime/3.0.1,
+  Via: 1.1 d98420743a69852491bbdea73f7680bd.cloudfront.net (CloudFront), X-Amz-Cf-Id: RIWeF20_5D2OiU3NFKjpPzlBiKhGvJ1zMIunUyZH-xCRCZ5QiewZFg==,
+  X-Forwarded-For: '173.240.241.213, 54.182.214.12', X-Forwarded-Port: '443', X-Forwarded-Proto: https,
+  accept-encoding: 'gzip, deflate', cache-control: no-cache, x-api-key: oNHXXUrhhZ3gxcgZRE5rq8EARCGEuuLhIp8AdQq7}
+# httpMethod: POST
+path: /hello
+pathParameters: null
+queryStringParameters: null
+requestContext:
+  accountId: '818443719598'
+  apiId: jwnmtm1q86
+  authorizer: {principalId: e09a13d3-bd07-426d-98a8-86deeb0796e3}
+  # httpMethod: GET 
+  identity: {accessKey: null, accountId: null, apiKey: oNHXXUrhhZ3gxcgZRE5rq8EARCGEuuLhIp8AdQq7,
+    caller: null, cognitoAuthenticationProvider: null, cognitoAuthenticationType: null,
+    cognitoIdentityId: null, cognitoIdentityPoolId: null, sourceIp: 173.240.241.213,
+    user: null, userAgent: PostmanRuntime/3.0.1, userArn: null}
+  requestId: a99f2e0f-9891-11e6-8ad4-257908998968
+  resourceId: kwxia2
+  resourcePath: /hello
+  stage: dev
+resource: /hello
+stageVariables: null

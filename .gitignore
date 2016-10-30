@@ -9,3 +9,5 @@ app/vendored
 node_modules
 admin.env
 *.pyc
+environments
+.env

@@ -1,13 +1,14 @@
 from flywheel import Model, Field, Engine
 from datetime import datetime
 import arrow
+import os 
 
 # DynamoDB Model
 class Account(Model):
     __metadata__ = {
-        #TODO This needs to come from env settings
-        '_name': 'curator-v1-dev-accounts',
+        '_name': 'curator-v1-%s-accounts' % os.environ['STAGE']
     }
+
     id = Field(type=unicode, hash_key=True)
     name = Field(type=unicode, range_key=True)
     owners = Field(type=set, coerce=True)

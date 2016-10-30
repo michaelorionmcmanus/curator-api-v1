@@ -20,7 +20,9 @@ class BaseRequest(object):
     """
     Constructor
     """
-    def __init__(self):
+    def __init__(self, event, context):
+        if('requestContext' in event and 'stage' in event['requestContext']):
+            os.environ['STAGE'] = event['requestContext']['stage']
         # Build a logger and attach it to the instance.
         logging.basicConfig()
         self.logger = logging.getLogger()

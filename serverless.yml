@@ -65,34 +65,34 @@ functions:
 # you can add CloudFormation resource templates here
 resources:
   Resources:
-    NewResource:
-      Type: "AWS::DynamoDB::Table"
-      Properties:
-        TableName: ${self:service}-${opt:stage, self:provider.stage}-accounts
-        AttributeDefinitions:
-          - AttributeName: owner_id
-            AttributeType: S
-          - AttributeName: id
-            AttributeType: S
-          - AttributeName: created
-            AttributeType: N
-        KeySchema:
-          - AttributeName: owner_id
-            KeyType: HASH
-          - AttributeName: id
-            KeyType: RANGE 
-        LocalSecondaryIndexes:
-          - KeySchema: 
-              - AttributeName: owner_id
-                KeyType: HASH
-              - AttributeName: created
-                KeyType: RANGE
-            IndexName: created-index
-            Projection:
-              ProjectionType: ALL
-        ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
+    AccountsTable: ${file(./schemas/dynamo/accounts.yml)}
+      # Type: "AWS::DynamoDB::Table"
+      # Properties:
+      #   TableName: ${self:service}-${opt:stage, self:provider.stage}-accounts
+      #   AttributeDefinitions:
+      #     - AttributeName: owner_id
+      #       AttributeType: S
+      #     - AttributeName: id
+      #       AttributeType: S
+      #     - AttributeName: created
+      #       AttributeType: N
+      #   KeySchema:
+      #     - AttributeName: owner_id
+      #       KeyType: HASH
+      #     - AttributeName: id
+      #       KeyType: RANGE 
+      #   LocalSecondaryIndexes:
+      #     - KeySchema: 
+      #         - AttributeName: owner_id
+      #           KeyType: HASH
+      #         - AttributeName: created
+      #           KeyType: RANGE
+      #       IndexName: created-index
+      #       Projection:
+      #         ProjectionType: ALL
+      #   ProvisionedThroughput:
+      #     ReadCapacityUnits: 5
+      #     WriteCapacityUnits: 5
   # Outputs:
   #   NewOutput:
   #     Description: "Description for the output"

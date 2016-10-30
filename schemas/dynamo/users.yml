@@ -1,0 +1,11 @@
+Properties:
+  AttributeDefinitions:
+  - {AttributeName: user_id, AttributeType: S}
+  - {AttributeName: account_id, AttributeType: S}
+  KeySchema:
+  - {AttributeName: user_id, KeyType: HASH}
+  - {AttributeName: account_id, KeyType: RANGE}
+  LocalSecondaryIndexes: null
+  ProvisionedThroughput: {ReadCapacityUnits: 5, WriteCapacityUnits: 5}
+  TableName: ${self:service}-${opt:stage, self:provider.stage}-users
+Type: AWS::DynamoDB::Table

@@ -1,0 +1,10 @@
+methods:
+    GET:
+      body:
+    POST:
+      body:
+        name: Some account
+    PATCH:
+      body:
+    DELETE:
+      body:

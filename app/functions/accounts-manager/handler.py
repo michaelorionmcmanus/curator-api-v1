@@ -4,8 +4,8 @@ from Account import Account
 from serializers import AccountSchema
 
 class AccountsManager(BaseRequest):
-    def __init__(self):
-        BaseRequest.__init__(self)
+    def __init__(self, event, context):
+        BaseRequest.__init__(self, event, context)
         self.log('Initialized AccountsManager instance')
 
     # Return all accounts for owner
@@ -29,5 +29,5 @@ class AccountsManager(BaseRequest):
         }
 
 def handler(event, context):
-    SlsRequestInstance = AccountsManager()
+    SlsRequestInstance = AccountsManager(event, context)
     return SlsRequestInstance.handler(event=event, context=context)
