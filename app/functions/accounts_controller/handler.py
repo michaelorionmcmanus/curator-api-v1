@@ -3,7 +3,7 @@ import json, requests, arrow, uuid
 from Account import Account
 from serializers import AccountSchema
 
-class AccountsManager(BaseRequest):
+class AccountsController(BaseRequest):
     def __init__(self, event, context):
         BaseRequest.__init__(self, event, context)
         self.log('Initialized AccountsManager instance')
@@ -14,8 +14,8 @@ class AccountsManager(BaseRequest):
         accounts = []
         account_schema = AccountSchema()
         for account in ownedAccounts:
-            accounts.append(account.__json__())
-        return { 'body': json.dumps(account_schema.dump(accounts, True).data)}
+            accounts.append(account)
+        return { 'body': account_schema.dump(accounts, True).data}
 
     # Create an account
     def post_handler(self, event, context, principal_id):
@@ -29,5 +29,5 @@ class AccountsManager(BaseRequest):
         }
 
 def handler(event, context):
-    SlsRequestInstance = AccountsManager(event, context)
+    SlsRequestInstance = AccountsController(event, context)
     return SlsRequestInstance.handler(event=event, context=context)

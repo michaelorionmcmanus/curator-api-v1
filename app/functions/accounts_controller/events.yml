@@ -1,6 +1,6 @@
 methods:
     GET:
-      body:
+      body: null
     POST:
       body:
         name: Some account

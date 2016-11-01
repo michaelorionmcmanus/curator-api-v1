@@ -1,5 +1,5 @@
 from os.path import dirname, basename, isfile
-import glob, os, sys, logging, json
+import glob, os, sys, logging, json, traceback
 from flywheel import Model, Field, Engine
 
 here = os.path.dirname(os.path.realpath(__file__))
@@ -72,7 +72,14 @@ class BaseRequest(object):
         # in the event.
         try:
             method_name = self._methods[event["httpMethod"]]
-            self.log('calling' + method_name)
+            self.log('calling ' + method_name)
+            # Extract body
+            if('body' in event):
+                try:
+                    event['body'] = json.loads(event['body'])
+                except Exception as e:
+                    self.log('Could not json.loads ' + str(event['body']))
+                    event['body'] = {}
             try:
                 principal_id = event['requestContext']['authorizer']['principalId']
             except Exception as e:
@@ -87,15 +94,18 @@ class BaseRequest(object):
             if type(e.message) is dict:
                 raise Exception(json.dumps(e.message))
             else:
+                traceback.print_exc()
                 raise Exception(json.dumps({
                     'statusCode': '500',
-                    'body': {
+                    'body': json.dumps({
                         'errors': [str(e)]
-                    }
+                    })
                 }))
         # Map return properties to the response.
         if('body' not in response):
             response['body'] = {}
+        elif (not isinstance(response['body'], str)):
+            response['body'] = json.dumps(response['body'])
         # Default response code is 200
         if('statusCode' not in response):
             response['statusCode'] = 200

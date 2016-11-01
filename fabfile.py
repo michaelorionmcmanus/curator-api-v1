@@ -141,14 +141,14 @@ def debug_func(function_dir, method, aws_profile="default"):
         event_data = yaml.load(data_file)['methods'][method]
     
     base_event['httpMethod'] = method
-    base_event['body'] = event_data['body']
+    base_event['body'] = json.dumps(event_data['body'])
 
     # Load environment vars
     load(aws_profile=aws_profile)
     # Load the handler as a module.
     module = imp.load_source('handler', function_path)
     result = module.handler(base_event, None)
-    
+    result['body'] = json.loads(result['body'])
     print(json.dumps(result, indent=2, sort_keys=True))
 
 def generate_cf_dynamo_schema():
