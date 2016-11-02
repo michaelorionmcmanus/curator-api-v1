@@ -27,9 +27,9 @@ class AccountsController(BaseRequest):
         self.db.sync(account)
         self.db.sync(account_user)
         account_schema = AccountSchema()
-        return { 
+        return {
             'statusCode': 201,
-            'body': account_schema.dump(account.__json__()).data
+            'body': account_schema.dump(account).data
         }
 
 def handler(event, context):
