@@ -5,7 +5,7 @@ provider:
   runtime: python2.7
   region: us-west-2
   stage: dev
-  profile: personal
+  profile: ${opt:profile}
 
   iamRoleStatements:
     - Effect: Allow
@@ -41,6 +41,7 @@ functions:
 resources:
   Resources:
     AccountsTable: ${file(./schemas/dynamo/accounts.yml)}
+    AccountsUsersTable: ${file(./schemas/dynamo/accounts-users.yml)}
   # Outputs:
   #   NewOutput:
   #     Description: "Description for the output"

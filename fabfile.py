@@ -156,7 +156,7 @@ def generate_cf_dynamo_schema():
     tables = [table for table in engine.dynamo.list_tables()]
     for table in tables:
         response = engine.dynamo.describe_table(table).response
-        table_name = response['TableName'].split('-')[-1]
+        table_name = "-".join(response['TableName'].split('-')[3:])
         properties = {
             'Type': 'AWS::DynamoDB::Table',
             'Properties': {
@@ -170,6 +170,9 @@ def generate_cf_dynamo_schema():
                 'LocalSecondaryIndexes': [{'KeySchema': item['KeySchema'], 'IndexName': item['IndexName'], 'Projection': item['Projection']} for item in response['LocalSecondaryIndexes']] if 'LocalSecondaryIndexes' in response else None
             }
         }
+
+        if(not properties['Properties']['LocalSecondaryIndexes']):
+            properties['Properties'].pop('LocalSecondaryIndexes', None)
 
         stream = file('./schemas/dynamo/{}.yml'
             .format(table_name), 'w')
