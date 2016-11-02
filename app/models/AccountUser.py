@@ -14,7 +14,7 @@ class AccountUser(Model):
     created = Field(type=datetime)
 
     # Constructor
-    def __init__(self, user_id, account_id, access, created):
+    def __init__(self, user_id, account_id, access):
         self.user_id = user_id
         self.account_id = account_id
         self.access = access
