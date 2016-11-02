@@ -1,5 +1,8 @@
 service: curator-v1
 
+plugins:
+  - serverless-plugin-cfauthorizer
+
 provider:
   name: aws
   runtime: python2.7
@@ -19,6 +22,15 @@ provider:
         - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:us-west-2:*:*"
 
+custom:
+  cfAuthorizers:
+    CognitoAuthorizer:
+      Type: "COGNITO_USER_POOLS"
+      Name: "CognitoUserPoolAuthorizer"
+      IdentitySource: "method.request.header.Authorization"
+      ProviderARNs:
+        - "arn:aws:cognito-idp:us-west-2:818443719598:userpool/us-west-2_1lUUc3IqG"
+
 functions:
   AccountsController:
     handler: run.accounts_controller
@@ -28,15 +40,15 @@ functions:
          method: get
          cors: true
          integration: lambda-proxy
-         authorizer:
-           arn: arn:aws:lambda:us-west-2:818443719598:function:sls-v05-cognito-authorizer
+         cfAuthorizer: CognitoAuthorizer
+        #  authorizer:
+        #    arn: arn:aws:lambda:us-west-2:818443719598:function:sls-v05-cognito-authorizer
       - http:
          path: accounts
          method: post
          cors: true
          integration: lambda-proxy
-         authorizer:
-           arn: arn:aws:lambda:us-west-2:818443719598:function:sls-v05-cognito-authorizer
+         cfAuthorizer: CognitoAuthorizer
 # you can add CloudFormation resource templates here
 resources:
   Resources:

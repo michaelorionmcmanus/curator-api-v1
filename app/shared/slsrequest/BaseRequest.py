@@ -81,7 +81,7 @@ class BaseRequest(object):
                     self.log('Could not json.loads ' + str(event['body']))
                     event['body'] = {}
             try:
-                principal_id = event['requestContext']['authorizer']['principalId']
+                principal_id = event['requestContext']['authorizer']['claims']['sub']
             except Exception as e:
                 principal_id = None
             response = getattr(self, '%s' % method_name)(event, context, principal_id)

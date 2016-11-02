@@ -151,6 +151,14 @@ def debug_func(function_dir, method, aws_profile="default"):
     result['body'] = json.loads(result['body'])
     print(json.dumps(result, indent=2, sort_keys=True))
 
+def generate_base_event():
+    with open('./sample-event.json') as data_file:
+        base_event = json.loads(data_file.read())
+
+    stream = file('./base-event.yml', 'w')
+    yaml.safe_dump(base_event, stream)
+
+
 def generate_cf_dynamo_schema():
     engine = _init_db()
     tables = [table for table in engine.dynamo.list_tables()]
