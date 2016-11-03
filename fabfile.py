@@ -35,6 +35,9 @@ DEFAULT_LAUNCH_ITEM = {
         ]
     }
 
+def debugsls(cmd):
+    local('node --debug-brk=5858 $NVM_BIN/serverless ' + cmd)
+
 def pip_install_dep(lib):
     local('pip install -t app/vendored/ ' + lib + ' --upgrade')
 

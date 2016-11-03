@@ -1,5 +1,6 @@
 service: curator-v1
 
+
 plugins:
   - serverless-plugin-cfauthorizer
 
@@ -8,7 +9,8 @@ provider:
   runtime: python2.7
   region: us-west-2
   stage: dev
-  profile: ${opt:profile}
+  profile: ${{opt:profile}}
+  variableSyntax: "\\${{([ :a-zA-Z0-9._,\\-\\/\\(\\)]+?)}}"
 
   iamRoleStatements:
     - Effect: Allow
@@ -41,8 +43,6 @@ functions:
          cors: true
          integration: lambda-proxy
          cfAuthorizer: CognitoAuthorizer
-        #  authorizer:
-        #    arn: arn:aws:lambda:us-west-2:818443719598:function:sls-v05-cognito-authorizer
       - http:
          path: accounts
          method: post
@@ -52,8 +52,34 @@ functions:
 # you can add CloudFormation resource templates here
 resources:
   Resources:
-    AccountsTable: ${file(./schemas/dynamo/accounts.yml)}
-    AccountsUsersTable: ${file(./schemas/dynamo/accounts-users.yml)}
+    AccountsTable: ${{file(./schemas/dynamo/accounts.yml)}}
+    AccountsUsersTable: ${{file(./schemas/dynamo/accounts-users.yml)}}
+    IoTUserPolicy: 
+      Type: "AWS::IoT::Policy"
+      Properties: 
+        PolicyName: ${{self:service}}-${{opt:stage, self:provider.stage}}-user-v1
+        PolicyDocument: 
+          Version: "2012-10-17"
+          Statement: 
+            - 
+              Effect: "Allow"
+              Action: 
+                - "iot:Connect"
+              Resource: 
+                - "*"
+            -
+              Effect: "Allow"
+              Action:
+                - "iot:Receive"
+              Resource:
+                - "arn:aws:iot:us-west-2:818443719598:topic/global"
+                - "arn:aws:iot:us-west-2:818443719598:topic/${cognito-identity.amazonaws.com:sub}"
+            -
+              Effect: "Allow"
+              Action:
+                - "iot:Subscribe"
+              Resource:
+                - "*"
   # Outputs:
   #   NewOutput:
   #     Description: "Description for the output"
