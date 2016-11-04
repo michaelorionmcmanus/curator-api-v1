@@ -171,7 +171,7 @@ def generate_cf_dynamo_schema():
         properties = {
             'Type': 'AWS::DynamoDB::Table',
             'Properties': {
-                'TableName': '${self:service}-${opt:stage, self:provider.stage}-%s' % table_name,
+                'TableName': '${{self:service}}-${{opt:stage, self:provider.stage}}-%s' % table_name,
                 'AttributeDefinitions': response['AttributeDefinitions'],
                 'KeySchema': response['KeySchema'],
                 'ProvisionedThroughput': {
