@@ -20,4 +20,4 @@ install:
 
 script:
   - fab test
-  - ./node_modules/serverless/bin/serverless deploy --stage preprod
+  # - ./node_modules/serverless/bin/serverless deploy --stage preprod

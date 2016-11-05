@@ -1,0 +1,33 @@
+body: null
+headers: {Accept: '*/*', Accept-Encoding: 'gzip, deflate', Authorization: eyJraWQiOiJBMXR3NXBEb0xIZmlYalB0cHM3Q2FsanlQQXBoZU9pTGd4cit3MTZ2OW9rPSIsImFsZyI6IlJTMjU2In0.eyJjdXN0b206dGl0bGUiOiJzeXN0ZW0tYWRtaW4iLCJzdWIiOiJlMDlhMTNkMy1iZDA3LTQyNmQtOThhOC04NmRlZWIwNzk2ZTMiLCJjdXN0b206cm9sZXMiOiJbXCJzeXN0ZW0tYWRtaW5cIl0iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLnVzLXdlc3QtMi5hbWF6b25hd3MuY29tXC91cy13ZXN0LTJfMWxVVWMzSXFHIiwiY29nbml0bzp1c2VybmFtZSI6Im1pY2hhZWxvcmlvbm1jbWFudXNAZ21haWwuY29tIiwiYXVkIjoiMThtbzg1c3BmMGc2ZzR2M3RybWxlN2x2YXUiLCJjdXN0b206Y29nbml0b0lkZW50aXRpZXMiOiJbXCJ1cy13ZXN0LTI6MzUwOTBhMDEtNjI0Ni00YWE5LTkxNmEtYzU2NzMzNzExZmY4XCJdIiwidG9rZW5fdXNlIjoiaWQiLCJhdXRoX3RpbWUiOjE0NzgwNjIyNjAsImV4cCI6MTQ3ODA2NTg2MCwiaWF0IjoxNDc4MDYyMjYwLCJlbWFpbCI6Im1pY2hhZWxvcmlvbm1jbWFudXNAZ21haWwuY29tIn0.bPlsvJvkA8iQ6WmQTk6d8Qg_1e0G3UmO_hgZDMBbOtiu4yo2i76hMglk23TSBGxnkiS4eg9Rbq7okZx2xkDXmL04RutYcD6ABSoP_Q0vMpEJusxfSoKLly4lahouniF_8ZnQkc2jlJL8dG61x6htqssBOlxRZmf5BUc-A_z1E2tdmPreGUviiTvHtgc5uZ_jBD6bmsZ9_oVwrtpM53pF0UMSoTJWszwERa4Onyp6PwfzbyoixG2EDnpmlj8ciNF-G0zcMV-Ntr8x3mw2w7tHoNopGYxMzUO68cvf7WWdrxn8RWSh7gnLuszvKQs4xXIk5caBoI-ZAP-lTncKzAlZfA,
+  CloudFront-Forwarded-Proto: https, CloudFront-Is-Desktop-Viewer: 'true', CloudFront-Is-Mobile-Viewer: 'false',
+  CloudFront-Is-SmartTV-Viewer: 'false', CloudFront-Is-Tablet-Viewer: 'false', CloudFront-Viewer-Country: US,
+  Content-Type: application/json, Host: jwnmtm1q86.execute-api.us-west-2.amazonaws.com,
+  Postman-Token: 19bf17c6-bcb7-4767-badb-17549ca0a868, User-Agent: PostmanRuntime/3.0.1,
+  Via: 1.1 fb9b30d0bac34e91aef1c344524376e1.cloudfront.net (CloudFront), X-Amz-Cf-Id: kV-2qAt3ZOu2ZN2y3F6KBRIa8TwElUx5SuPdtfH6QA8DIdqbYcI-7A==,
+  X-Forwarded-For: '172.56.42.229, 205.251.214.76', X-Forwarded-Port: '443', X-Forwarded-Proto: https,
+  cache-control: no-cache}
+httpMethod: GET
+path: /accounts
+pathParameters: null
+queryStringParameters: null
+requestContext:
+  accountId: '818443719598'
+  apiId: jwnmtm1q86
+  authorizer:
+    claims: {aud: 18mo85spf0g6g4v3trmle7lvau, auth_time: '1478062260', 'cognito:username': michaelorionmcmanus@gmail.com,
+      'custom:cognitoIdentities': '["us-west-2:35090a01-6246-4aa9-916a-c56733711ff8"]',
+      'custom:roles': '["system-admin"]', 'custom:title': system-admin, email: michaelorionmcmanus@gmail.com,
+      email_verified: 'true', exp: 'Wed Nov 02 05:51:00 UTC 2016', iat: 'Wed Nov 02
+        04:51:00 UTC 2016', iss: 'https://cognito-idp.us-west-2.amazonaws.com/us-west-2_1lUUc3IqG',
+      sub: e09a13d3-bd07-426d-98a8-86deeb0796e3, token_use: id}
+  httpMethod: GET
+  identity: {accessKey: null, accountId: null, apiKey: null, caller: null, cognitoAuthenticationProvider: null,
+    cognitoAuthenticationType: null, cognitoIdentityId: null, cognitoIdentityPoolId: null,
+    sourceIp: 172.56.42.229, user: null, userAgent: PostmanRuntime/3.0.1, userArn: null}
+  requestId: 19faeb5b-a0b8-11e6-9254-77dfdbd45391
+  resourceId: uqwb6g
+  resourcePath: /accounts
+  stage: dev
+resource: /accounts
+stageVariables: null

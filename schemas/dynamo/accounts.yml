@@ -1,0 +1,17 @@
+Properties:
+  AttributeDefinitions:
+  - {AttributeName: created, AttributeType: N}
+  - {AttributeName: id, AttributeType: S}
+  - {AttributeName: name, AttributeType: S}
+  KeySchema:
+  - {AttributeName: id, KeyType: HASH}
+  - {AttributeName: name, KeyType: RANGE}
+  LocalSecondaryIndexes:
+  - IndexName: created-index
+    KeySchema:
+    - {AttributeName: id, KeyType: HASH}
+    - {AttributeName: created, KeyType: RANGE}
+    Projection: {ProjectionType: ALL}
+  ProvisionedThroughput: {ReadCapacityUnits: 5, WriteCapacityUnits: 5}
+  TableName: ${{self:service}}-${{opt:stage, self:provider.stage}}-accounts
+Type: AWS::DynamoDB::Table
