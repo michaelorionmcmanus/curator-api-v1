@@ -31,13 +31,13 @@ class BaseRequest(object):
         engine = Engine()
         # Connect the engine to either a local DynamoDB or a particular region.
         if('USE_LOCAL_DB' in os.environ and os.environ['USE_LOCAL_DB'] == 'True'):
-            engine.connect('us-west-2', host='localhost',
+            engine.connect(os.environ['AWS_REGION'], host='localhost',
                 port=8000,
                 access_key='anything',
                 secret_key='anything',
                 is_secure=False)
         else:
-            engine.connect_to_region('us-west-2')
+            engine.connect_to_region(os.environ['AWS_REGION'])
         
         # Auto-magically load and register dynamo db models
 
