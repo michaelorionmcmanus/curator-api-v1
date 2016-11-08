@@ -128,15 +128,12 @@ def rebuild_database():
     for table in tables:
         engine.dynamo.describe_table(table)
 
-def debug_func(function_dir, method, aws_profile="default"):
-    #TODO: This should be overridable 
+def debug_func(function_dir, method):
+    profile = os.environ['AWS_DEFAULT_PROFILE']
+    #TODO: This should be overridable
     os.environ['USE_LOCAL_DB'] = 'True'
     # Get the function path.
     function_path = function_dir + '/handler.py'
-    # Get event test event data.
-    # with open(function_dir + '/event.json') as data_file:
-    #     event_data = json.load(data_file)
-
     with open('base-event.yml') as data_file:
         base_event = yaml.load(data_file)
 
@@ -145,9 +142,9 @@ def debug_func(function_dir, method, aws_profile="default"):
     
     base_event['httpMethod'] = method
     base_event['body'] = json.dumps(event_data['body'])
-
+    base_event['pathParameters'] = json.dumps(event_data['pathParameters'])
     # Load environment vars
-    load(aws_profile=aws_profile)
+    load(aws_profile=profile)
     # Load the handler as a module.
     module = imp.load_source('handler', function_path)
     result = module.handler(base_event, None)
