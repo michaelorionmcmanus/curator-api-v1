@@ -6,9 +6,6 @@ from AccountUser import AccountUser
 from serializers import AccountSchema
 
 region = os.environ['SERVERLESS_REGION']
-user_pool_client_id = os.environ.get('COGNITO_USER_POOL_CLIENT_ID')
-user_pool_id = os.environ.get('COGNITO_USER_POOL_ID')
-
 iot_client = boto3.client('iot', region_name=region)
 cognito_idp_client= boto3.client('cognito-idp', region_name=region)
 default_iot_policy_name = '{}-{}-user-v2'.format(os.environ['SERVERLESS_SERVICE_NAME'], os.environ['STAGE'])
