@@ -21,7 +21,9 @@ class AccountsController(BaseRequest):
 
     # Create an account
     def post_handler(self, event, context, principal_id):
-        name = event['body']['name']
+        account_schema = AccountSchema()
+        new_account = account_schema.load(event['body'])
+        name = new_account.data['name']
         account = Account(name, uuid.uuid4().__str__(), principal_id)
         account_user = AccountUser(principal_id, account.id, 'owner')
         self.db.sync(account)

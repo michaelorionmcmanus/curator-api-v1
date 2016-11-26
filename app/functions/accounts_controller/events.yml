@@ -2,8 +2,7 @@ methods:
     GET:
       body: null
     POST:
-      body:
-        name: Some account
+      body: {"data":{"attributes":{"name":"An Account", members: {}},"type":"accounts"}}
     PATCH:
       body:
     DELETE:
