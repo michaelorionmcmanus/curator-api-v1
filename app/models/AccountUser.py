@@ -7,6 +7,10 @@ class AccountUser(Model):
     __metadata__ = {
         #TODO This needs to come from env settings
         '_name': 'curator-v1-dev-accounts-users',
+        'throughput': {
+            'read': 1,
+            'write': 1
+        }
     }
     user_id = Field(type=unicode, hash_key=True)
     account_id = Field(type=unicode, range_key=True)

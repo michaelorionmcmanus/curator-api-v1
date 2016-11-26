@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "serverless": "^1.0.3",
+    "serverless": "^1.2.0",
     "serverless-plugin-cfauthorizer": "^0.2.1"
   }
 }

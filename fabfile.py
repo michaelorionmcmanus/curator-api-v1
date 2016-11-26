@@ -3,7 +3,8 @@ import glob
 import time
 import os
 import sys
-from os.path import dirname, basename, isfile
+from os.path import dirname, basename, isfile, join
+from dotenv import load_dotenv
 from fabric.context_managers import lcd
 import json
 import imp
@@ -34,6 +35,20 @@ DEFAULT_LAUNCH_ITEM = {
             "rebuild_database"
         ]
     }
+
+# Auto generate env file if not present.
+if not os.path.isfile('./app/.env.yml'):
+    dist_env_vars = yaml.load(open('./app/.env.dist.yml'))
+    for k, v in dist_env_vars.iteritems():
+        if os.environ.get(k):
+            dist_env_vars[k] = os.environ[k]
+    stream = file('./app/.env.yml', 'w')
+    yaml.safe_dump(dist_env_vars, stream)
+    print yaml.dump(dist_env_vars)
+
+env_vars = yaml.load(open('./app/.env.yml'))
+for k, v in env_vars.iteritems():
+    os.environ[k] = v
 
 def debugsls(cmd):
     local('node --debug-brk=5858 $NVM_BIN/serverless ' + cmd)
@@ -128,15 +143,12 @@ def rebuild_database():
     for table in tables:
         engine.dynamo.describe_table(table)
 
-def debug_func(function_dir, method, aws_profile="default"):
-    #TODO: This should be overridable 
+def debug_func(function_dir, method):
+    profile = os.environ['AWS_DEFAULT_PROFILE']
+    #TODO: This should be overridable
     os.environ['USE_LOCAL_DB'] = 'True'
     # Get the function path.
     function_path = function_dir + '/handler.py'
-    # Get event test event data.
-    # with open(function_dir + '/event.json') as data_file:
-    #     event_data = json.load(data_file)
-
     with open('base-event.yml') as data_file:
         base_event = yaml.load(data_file)
 
@@ -145,9 +157,10 @@ def debug_func(function_dir, method, aws_profile="default"):
     
     base_event['httpMethod'] = method
     base_event['body'] = json.dumps(event_data['body'])
-
+    if('pathParameters' in event_data):
+        base_event['pathParameters'] = json.dumps(event_data['pathParameters'])
     # Load environment vars
-    load(aws_profile=aws_profile)
+    load(aws_profile=profile)
     # Load the handler as a module.
     module = imp.load_source('handler', function_path)
     result = module.handler(base_event, None)

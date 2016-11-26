@@ -12,6 +12,6 @@ Properties:
     - {AttributeName: id, KeyType: HASH}
     - {AttributeName: created, KeyType: RANGE}
     Projection: {ProjectionType: ALL}
-  ProvisionedThroughput: {ReadCapacityUnits: 5, WriteCapacityUnits: 5}
+  ProvisionedThroughput: {ReadCapacityUnits: 1, WriteCapacityUnits: 1}
   TableName: ${{self:service}}-${{opt:stage, self:provider.stage}}-accounts
 Type: AWS::DynamoDB::Table

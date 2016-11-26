@@ -11,3 +11,4 @@ admin.env
 *.pyc
 environments
 .env
+.env.yml

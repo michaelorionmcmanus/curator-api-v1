@@ -1,0 +1,16 @@
+methods:
+    GET:
+      body: null
+    POST:
+      body:
+        name: Some account
+    PATCH:
+      pathParameters:
+        userId: e09a13d3-bd07-426d-98a8-86deeb0796e3
+      body:
+        - 
+          op: add
+          path: /cognito-identities/1
+          value: us-west-2:a47a4d81-7043-42ec-8956-dd4e39c3b51a
+    DELETE:
+      body:

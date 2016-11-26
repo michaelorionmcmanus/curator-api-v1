@@ -11,6 +11,7 @@ provider:
   stage: dev
   profile: ${{opt:profile}}
   variableSyntax: "\\${{([ :a-zA-Z0-9._,\\-\\/\\(\\)]+?)}}"
+  environment: ${{file(./app/.env.yml)}}
 
   iamRoleStatements:
     - Effect: Allow
@@ -23,6 +24,16 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:us-west-2:*:*"
+    - Effect: Allow
+      Action:
+        - iot:*
+      Resource:
+        - '*'
+    - Effect: Allow
+      Action:
+        - cognito-idp:*
+      Resource:
+        - '*'
 
 custom:
   cfAuthorizers:
@@ -49,6 +60,15 @@ functions:
          cors: true
          integration: lambda-proxy
          cfAuthorizer: CognitoAuthorizer
+  UsersController:
+    handler: run.users_controller
+    events:
+      - http:
+          path: users/{userId}
+          method: patch
+          cors: true
+          integration: lambda-proxy
+          cfAuthorizer: CognitoAuthorizer
 # you can add CloudFormation resource templates here
 resources:
   Resources:
@@ -57,7 +77,7 @@ resources:
     IoTUserPolicy: 
       Type: "AWS::IoT::Policy"
       Properties: 
-        PolicyName: ${{self:service}}-${{opt:stage, self:provider.stage}}-user-v1
+        PolicyName: ${{self:service}}-${{opt:stage, self:provider.stage}}-user-v2
         PolicyDocument: 
           Version: "2012-10-17"
           Statement: 

@@ -6,7 +6,11 @@ import os
 # DynamoDB Model
 class Account(Model):
     __metadata__ = {
-        '_name': 'curator-v1-%s-accounts' % os.environ['STAGE']
+        '_name': 'curator-v1-%s-accounts' % os.environ['STAGE'],
+        'throughput': {
+            'read': 1,
+            'write': 1
+        }
     }
 
     id = Field(type=unicode, hash_key=True)
