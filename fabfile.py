@@ -3,7 +3,8 @@ import glob
 import time
 import os
 import sys
-from os.path import dirname, basename, isfile
+from os.path import dirname, basename, isfile, join
+from dotenv import load_dotenv
 from fabric.context_managers import lcd
 import json
 import imp
@@ -34,6 +35,10 @@ DEFAULT_LAUNCH_ITEM = {
             "rebuild_database"
         ]
     }
+
+env_vars = yaml.load(open('./app/.env.yml'))
+for k, v in env_vars.iteritems():
+    os.environ[k] = v
 
 def debugsls(cmd):
     local('node --debug-brk=5858 $NVM_BIN/serverless ' + cmd)
@@ -142,7 +147,8 @@ def debug_func(function_dir, method):
     
     base_event['httpMethod'] = method
     base_event['body'] = json.dumps(event_data['body'])
-    base_event['pathParameters'] = json.dumps(event_data['pathParameters'])
+    if('pathParameters' in event_data):
+        base_event['pathParameters'] = json.dumps(event_data['pathParameters'])
     # Load environment vars
     load(aws_profile=profile)
     # Load the handler as a module.

@@ -1,16 +1,19 @@
 from slsrequest import BaseRequest
 import json, requests, arrow, uuid, re, os, boto3
+from shared.pubsub import client as pubsub
 from Account import Account
 from AccountUser import AccountUser 
 from serializers import AccountSchema
 
-region = os.environ['AWS_REGION']
+region = os.environ['SERVERLESS_REGION']
 user_pool_client_id = os.environ.get('COGNITO_USER_POOL_CLIENT_ID')
 user_pool_id = os.environ.get('COGNITO_USER_POOL_ID')
 
 iot_client = boto3.client('iot', region_name=region)
 cognito_idp_client= boto3.client('cognito-idp', region_name=region)
-default_iot_policy_name = '{}-{}-user-v1'.format(os.environ['SERVERLESS_SERVICE_NAME'], os.environ['STAGE'])
+default_iot_policy_name = '{}-{}-user-v2'.format(os.environ['SERVERLESS_SERVICE_NAME'], os.environ['STAGE'])
+
+pubsub_client = pubsub.get_client()
 
 class UsersController(BaseRequest):
     def __init__(self, event, context):
@@ -84,6 +87,13 @@ class UsersController(BaseRequest):
 
         return {
             'statusCode': 204,
+            'body': {}
+        }
+
+    def post_handler(self, event, context, principal_id):
+        pubsub_client.publish('us-west-2:f3889f42-8f28-421d-b476-1e5039476414', 'HAI', 1)
+        return {
+            'statusCode': 201,
             'body': {}
         }
 

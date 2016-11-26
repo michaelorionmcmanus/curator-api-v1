@@ -1,7 +1,7 @@
 import os, json, re
 
 def load(aws_profile="default"):
-    aws_credentials = '~/.aws/credentials'
+    aws_credentials = '{}/.aws/credentials'.format(os.environ['HOME'])
     if os.path.isfile(aws_credentials):
         # Get aws credentials file in order to access key/secret for specified profile.
         with open(os.path.expanduser(aws_credentials)) as credentials_file:
@@ -19,8 +19,8 @@ def load(aws_profile="default"):
 
         # Inject environment variables for aws connection. This is not done in an actual environment.
         if key and secret:
-            os.environ['AWS_ACCESS_KEY_ID'] = key.split('=')[1]
-            os.environ['AWS_SECRET_ACCESS_KEY'] = secret.split('=')[1]
+            os.environ['AWS_ACCESS_KEY_ID'] = key.split('=')[1].strip()
+            os.environ['AWS_SECRET_ACCESS_KEY'] = secret.split('=')[1].strip()
         else:
             # Expect environment variables to be already present.
             pass
