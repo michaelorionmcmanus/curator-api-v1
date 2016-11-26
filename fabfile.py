@@ -36,6 +36,16 @@ DEFAULT_LAUNCH_ITEM = {
         ]
     }
 
+# Auto generate env file if not present.
+if not os.path.isfile('./app/.env.yml'):
+    dist_env_vars = yaml.load(open('./app/.env.dist.yml'))
+    for k, v in dist_env_vars.iteritems():
+        if os.environ.get(k):
+            dist_env_vars[k] = os.environ[k]
+    stream = file('./app/.env.yml', 'w')
+    yaml.safe_dump(dist_env_vars, stream)
+    print yaml.dump(dist_env_vars)
+
 env_vars = yaml.load(open('./app/.env.yml'))
 for k, v in env_vars.iteritems():
     os.environ[k] = v
