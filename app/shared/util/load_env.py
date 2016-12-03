@@ -2,6 +2,8 @@ import os, json, re
 
 def load(aws_profile="default"):
     aws_credentials = '{}/.aws/credentials'.format(os.environ['HOME'])
+    key = None
+    secret = None
     if os.path.isfile(aws_credentials):
         # Get aws credentials file in order to access key/secret for specified profile.
         with open(os.path.expanduser(aws_credentials)) as credentials_file:

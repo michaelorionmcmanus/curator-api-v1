@@ -69,11 +69,60 @@ functions:
           cors: true
           integration: lambda-proxy
           cfAuthorizer: CognitoAuthorizer
+  InstagramAccountsAuthorizationController:
+    handler: run.instagram_accounts_authorization_controller
+    events:
+      - http:
+          path: instagram-accounts/authorization
+          method: get
+          cors: true
+          integration: lambda-proxy
+          cfAuthorizer: CognitoAuthorizer
+  InstagramAccountsController:
+    handler: run.instagram_accounts_controller
+    events:
+      - http: 
+          path: accounts/{accountId}/instagram-accounts
+          method: get
+          cors: true
+          integration: lambda-proxy
+          cfAuthorizer: CognitoAuthorizer
+      - http: 
+          path: accounts/{accountId}/instagram-accounts
+          method: post
+          cors: true
+          integration: lambda-proxy
+          cfAuthorizer: CognitoAuthorizer
+  InstagramSubscriptionProcessor:
+    handler: run.instagram_subscription_processor
+    events:
+      - http:
+          path: system/subscriptions/instagram/process
+          method: post
+          integration: lambda-proxy
+      - http:
+          path: system/subscriptions/instagram/process
+          method: get
+          cors: true
+          integration: lambda
+          response:
+            headers:
+              Content-Type: "'text/plain'"
+            template: $input.path('$')
+            statusCodes:
+              200:
+                pattern: ''
+                template:
+                  text/plain: $input.path('$')
+          request:
+            template:
+              application/json: '{ "httpMethod" : "$context.httpMethod", "queryStringParameters": {"hub_mode": "$input.params(''hub.mode'')","hub_verify_token": "$input.params(''hub.verify_token'')","hub_challenge": "$input.params(''hub.challenge'')"} }'
 # you can add CloudFormation resource templates here
 resources:
   Resources:
     AccountsTable: ${{file(./schemas/dynamo/accounts.yml)}}
     AccountsUsersTable: ${{file(./schemas/dynamo/accounts-users.yml)}}
+    AccountCredentialsTable: ${{file(./schemas/dynamo/account-credentials.yml)}}
     IoTUserPolicy: 
       Type: "AWS::IoT::Policy"
       Properties: 

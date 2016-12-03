@@ -1,0 +1,45 @@
+{
+    "status_code": 200, 
+    "data": {
+        "Count": 1, 
+        "Items": [
+            {
+                "id": {
+                    "S": "a0bfa5c8-0b88-4199-a516-3490c790f966"
+                }, 
+                "owners": {
+                    "SS": [
+                        "e09a13d3-bd07-426d-98a8-86deeb0796e3"
+                    ]
+                }, 
+                "name": {
+                    "S": "An Account"
+                }, 
+                "created": {
+                    "N": "1480629986.862899"
+                }
+            }
+        ], 
+        "LastEvaluatedKey": {
+            "name": {
+                "S": "An Account"
+            }, 
+            "id": {
+                "S": "a0bfa5c8-0b88-4199-a516-3490c790f966"
+            }
+        }, 
+        "ScannedCount": 1, 
+        "ResponseMetadata": {
+            "RetryAttempts": 0, 
+            "HTTPStatusCode": 200, 
+            "RequestId": "dde3b8f5-afb6-47d0-8105-ab67daaf3b54", 
+            "HTTPHeaders": {
+                "x-amzn-requestid": "dde3b8f5-afb6-47d0-8105-ab67daaf3b54", 
+                "content-length": "306", 
+                "content-type": "application/x-amz-json-1.0", 
+                "x-amz-crc32": "1942813075", 
+                "server": "Jetty(8.1.12.v20130726)"
+            }
+        }
+    }
+}

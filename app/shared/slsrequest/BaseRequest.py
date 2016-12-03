@@ -20,7 +20,7 @@ class BaseRequest(object):
     """
     Constructor
     """
-    def __init__(self, event, context):
+    def __init__(self, event={}, context={}, session=None):
         if('requestContext' in event and 'stage' in event['requestContext']):
             os.environ['STAGE'] = event['requestContext']['stage']
         # Build a logger and attach it to the instance.
@@ -35,7 +35,8 @@ class BaseRequest(object):
                 port=8000,
                 access_key='anything',
                 secret_key='anything',
-                is_secure=False)
+                is_secure=False,
+                session=None)
         else:
             engine.connect_to_region(os.environ['SERVERLESS_REGION'])
         
@@ -74,7 +75,7 @@ class BaseRequest(object):
             method_name = self._methods[event["httpMethod"]]
             self.log('calling ' + method_name)
             # Extract body
-            if('body' in event):
+            if('body' in event and event['body'] != None):
                 try:
                     event['body'] = json.loads(event['body'])
                 except Exception as e:
@@ -92,15 +93,17 @@ class BaseRequest(object):
             # TODO handle other exception types.
             self.log(e)
             if type(e.message) is dict:
-                raise Exception(json.dumps(e.message))
+                response = e.message
             else:
                 traceback.print_exc()
-                raise Exception(json.dumps({
+                response = {
                     'statusCode': '500',
                     'body': json.dumps({
                         'errors': [str(e)]
                     })
-                }))
+                }
+        if('passthrough' in response):
+            return response['passthrough']
         # Map return properties to the response.
         if('body' not in response):
             response['body'] = {}

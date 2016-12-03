@@ -10,7 +10,7 @@ iot_client = boto3.client('iot', region_name=region)
 cognito_idp_client= boto3.client('cognito-idp', region_name=region)
 default_iot_policy_name = '{}-{}-user-v2'.format(os.environ['SERVERLESS_SERVICE_NAME'], os.environ['STAGE'])
 
-pubsub_client = pubsub.get_client()
+# pubsub_client = pubsub.get_client()
 
 class UsersController(BaseRequest):
     def __init__(self, event, context):

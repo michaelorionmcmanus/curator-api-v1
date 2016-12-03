@@ -1,0 +1,35 @@
+{
+    "status_code": 200, 
+    "data": {
+        "Count": 1, 
+        "Items": [
+            {
+                "access": {
+                    "S": "owner"
+                }, 
+                "user_id": {
+                    "S": "e09a13d3-bd07-426d-98a8-86deeb0796e3"
+                }, 
+                "account_id": {
+                    "S": "a0bfa5c8-0b88-4199-a516-3490c790f966"
+                }, 
+                "created": {
+                    "N": "1480629986.86816"
+                }
+            }
+        ], 
+        "ScannedCount": 1, 
+        "ResponseMetadata": {
+            "RetryAttempts": 0, 
+            "HTTPStatusCode": 200, 
+            "RequestId": "cc2e0590-f519-4a94-ab06-5fb134d6ac9e", 
+            "HTTPHeaders": {
+                "x-amzn-requestid": "cc2e0590-f519-4a94-ab06-5fb134d6ac9e", 
+                "content-length": "211", 
+                "content-type": "application/x-amz-json-1.0", 
+                "x-amz-crc32": "1905058308", 
+                "server": "Jetty(8.1.12.v20130726)"
+            }
+        }
+    }
+}

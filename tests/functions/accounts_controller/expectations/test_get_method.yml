@@ -1,0 +1,9 @@
+data:
+- attributes:
+    created: '2016-12-01T22:06:26.862899+00:00'
+    members: []
+    name: An Account
+    owners: [e09a13d3-bd07-426d-98a8-86deeb0796e3]
+  id: a0bfa5c8-0b88-4199-a516-3490c790f966
+  type: accounts
+links: {self: null}

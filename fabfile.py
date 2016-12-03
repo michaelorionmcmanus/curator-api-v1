@@ -12,6 +12,7 @@ import re
 from app.shared.util.load_env import load
 from flywheel import Model, Field, Engine
 import yaml
+import pytest
 
 # def debugsls(cmd):
 #     local('node --debug-brk=5858 ' + npm_modules + '/serverless/bin/serverless ' + cmd)
@@ -78,8 +79,13 @@ def pip_freeze_vendor():
 
 def pip_install_vendor_deps():
     local('pip install -t app/vendored -r vendor-requirements.txt')                 
-def test():
-    local('py.test tests --confcutdir ./')
+def test(test=None):
+    os.environ['USE_LOCAL_DB'] = 'True'
+    if test:
+        pytest.main([test])
+        # local('py.test {} --confcutdir ./'.format(test))
+    else:
+        local('py.test tests --confcutdir ./')
 
 def generate_vscode_launch_file():
     with open('.vscode/launch.json') as data_file:
@@ -106,10 +112,17 @@ def generate_vscode_launch_file():
     for dirName, subdirList, fileList in os.walk(rootDir):
         # print('Found directory: %s' % dirName)
         if('event.json' and 'handler.py' in fileList):
-            for item in ['GET', 'POST', 'PATCH', 'DELETE']:
+            for item in ['GET', 'POST', 'PATCH', 'DELETE', 'UNIT_TESTS', 'INTEGRATION_TESTS']:
                 out = DEFAULT_LAUNCH_ITEM.copy()
                 out['name'] = re.search(rootDir + '/(.*)', dirName).group(1) + ' %s' % item
-                out['args'] = ['debug_func:' + dirName + ',' + item] 
+                if item == 'UNIT_TESTS':
+                    function_name = dirName.split('/')[-1]
+                    out['args'] = ['test:' + 'tests/functions/{}/{}_unit_test.py'.format(function_name, function_name) ]
+                elif item == 'INTEGRATION_TESTS':
+                    function_name = dirName.split('/')[-1]
+                    out['args'] = ['test:' + 'tests/functions/{}/{}_integration_test.py'.format(function_name, function_name) ]
+                else:
+                    out['args'] = ['debug_func:' + dirName + ',' + item]
                 functions.append(out)
     
     launch_data['configurations'] = functions 
@@ -149,6 +162,7 @@ def debug_func(function_dir, method):
     os.environ['USE_LOCAL_DB'] = 'True'
     # Get the function path.
     function_path = function_dir + '/handler.py'
+    function_package = (function_dir + '/handler').replace('/', '.')
     with open('base-event.yml') as data_file:
         base_event = yaml.load(data_file)
 
@@ -156,15 +170,25 @@ def debug_func(function_dir, method):
         event_data = yaml.load(data_file)['methods'][method]
     
     base_event['httpMethod'] = method
-    base_event['body'] = json.dumps(event_data['body'])
+
+    if not (event_data['body'] == None):
+        base_event['body'] = json.dumps(event_data['body'])
     if('pathParameters' in event_data):
-        base_event['pathParameters'] = json.dumps(event_data['pathParameters'])
+        base_event['pathParameters'] = event_data['pathParameters']
+    if('queryStringParameters' in event_data):
+        base_event['queryStringParameters'] = event_data['queryStringParameters']
     # Load environment vars
     load(aws_profile=profile)
     # Load the handler as a module.
+    # module = __import__(function_package, fromlist=[''])
     module = imp.load_source('handler', function_path)
     result = module.handler(base_event, None)
-    result['body'] = json.loads(result['body'])
+    is_json = True
+    if 'Content-Type' in result['headers']:
+        if result['headers']['Content-Type'] == 'text/plain':
+            is_json = False
+    if is_json:
+        result['body'] = json.loads(result['body'])
     print(json.dumps(result, indent=2, sort_keys=True))
 
 def generate_base_event():
@@ -191,12 +215,15 @@ def generate_cf_dynamo_schema():
                     'ReadCapacityUnits': response['ProvisionedThroughput']['ReadCapacityUnits'],
                     'WriteCapacityUnits': response['ProvisionedThroughput']['WriteCapacityUnits']
                 },
-                'LocalSecondaryIndexes': [{'KeySchema': item['KeySchema'], 'IndexName': item['IndexName'], 'Projection': item['Projection']} for item in response['LocalSecondaryIndexes']] if 'LocalSecondaryIndexes' in response else None
+                'LocalSecondaryIndexes': [{'KeySchema': item['KeySchema'], 'IndexName': item['IndexName'], 'Projection': item['Projection']} for item in response['LocalSecondaryIndexes']] if 'LocalSecondaryIndexes' in response else None,
+                'GlobalSecondaryIndexes': [{'KeySchema': item['KeySchema'], 'IndexName': item['IndexName'], 'ProvisionedThroughput': {'ReadCapacityUnits': response['ProvisionedThroughput']['ReadCapacityUnits'], 'WriteCapacityUnits': response['ProvisionedThroughput']['WriteCapacityUnits']}, 'Projection': item['Projection']} for item in response['GlobalSecondaryIndexes']] if 'GlobalSecondaryIndexes' in response else None
             }
         }
-
+        # CF doesn't appreciate null property values. So remove secondary indices if they are not defined.
         if(not properties['Properties']['LocalSecondaryIndexes']):
             properties['Properties'].pop('LocalSecondaryIndexes', None)
+        if(not properties['Properties']['GlobalSecondaryIndexes']):
+            properties['Properties'].pop('GlobalSecondaryIndexes', None)
 
         stream = file('./schemas/dynamo/{}.yml'
             .format(table_name), 'w')
