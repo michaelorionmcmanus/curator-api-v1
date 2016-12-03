@@ -8,10 +8,6 @@ pill = placebo.attach(session, data_path=os.path.join(here, 'placebos'))
 pill.playback()
 
 def test_get_method():
-    # Build environment
-    os.environ['STAGE'] = 'dev'
-    os.environ['SERVERLESS_REGION'] = 'us-west-2'
-    os.environ['SERVERLESS_SERVICE_NAME'] = 'curator-api-v1'
     # We want to be able to access local db when building placebos
     os.environ['USE_LOCAL_DB'] = 'True'
     # Import our module.

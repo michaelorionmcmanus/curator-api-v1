@@ -1,14 +1,13 @@
 import pytest
-from app.functions.instagram_accounts_controller.handler import InstagramAccountsController
-from util.load_env import load
 import responses
 import requests
 
 @responses.activate
 def test_get_instagram_account_credentials_success():
+    module = __import__('app.functions.instagram_accounts_controller.handler', fromlist=['InstagramAccountsController'])
     event = {}
     context = {}
-    controller_instance = InstagramAccountsController(event, context)
+    controller_instance = module.InstagramAccountsController(event, context)
     code = 'some_code'
     redirect_uri = 'http://localhost:4200/accounts/dashboard/instagram-accounts?account_id=656b0bb4-3c02-41c1-8aa3-6761973e1b91'
     expected_access_token = '2003123.538a604.85334889cbf946e289ffa647034c63d9'
@@ -24,9 +23,10 @@ def test_get_instagram_account_credentials_success():
 
 @responses.activate
 def test_get_instagram_account_credentials_code_used():
+    module = __import__('app.functions.instagram_accounts_controller.handler', fromlist=['InstagramAccountsController'])
     event = {}
     context = {}
-    controller_instance = InstagramAccountsController(event, context)
+    controller_instance = module.InstagramAccountsController(event, context)
     code = 'some_code'
     redirect_uri = 'http://localhost:4200/accounts/dashboard/instagram-accounts?account_id=656b0bb4-3c02-41c1-8aa3-6761973e1b91'
     responses.add(responses.POST, 'https://api.instagram.com/oauth/access_token',
