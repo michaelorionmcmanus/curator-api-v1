@@ -12,3 +12,4 @@ admin.env
 environments
 .env
 .env.yml
+.idea

@@ -1,4 +1,4 @@
-import pytest, imp, yaml, sys, os, json, yaml
+import os, json, yaml
 here = os.path.dirname(os.path.realpath(__file__))
 import placebo
 from botocore import session as boto_session

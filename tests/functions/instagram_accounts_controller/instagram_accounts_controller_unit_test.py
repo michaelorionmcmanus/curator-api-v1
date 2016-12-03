@@ -1,6 +1,5 @@
 import pytest
 import responses
-import requests
 
 @responses.activate
 def test_get_instagram_account_credentials_success():

@@ -1,5 +1,3 @@
-import pytest
-
 def test_no_boom():
     module = __import__('app.functions.accounts_controller.handler', fromlist=['AccountsController'])
     AccountsController = module.AccountsController
