@@ -36,7 +36,9 @@ class BaseRequest(object):
                 access_key='anything',
                 secret_key='anything',
                 is_secure=False,
-                session=None)
+                session=session)
+        elif os.environ['CI'] == 'True':
+            engine.connect_to_region(os.environ['SERVERLESS_REGION'], session=session)
         else:
             engine.connect_to_region(os.environ['SERVERLESS_REGION'])
         

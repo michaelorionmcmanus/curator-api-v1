@@ -6,7 +6,7 @@ session = boto_session.get_session()
 session.events = session.get_component('event_emitter')
 pill = placebo.attach(session, data_path=os.path.join(here, 'placebos'))
 pill.playback()
-run = imp.load_source('accounts_controller', 'run.py')
+run = __import__('run')
 
 def test_get_method():
     with open('base-event.yml') as data_file:

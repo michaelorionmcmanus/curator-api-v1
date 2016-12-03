@@ -182,7 +182,7 @@ def debug_func(function_dir, method):
     # Load the handler as a module.
     # module = __import__(function_package, fromlist=[''])
     module = imp.load_source('handler', function_path)
-    result = module.handler(base_event, None)
+    result = module.handler(base_event, None, None)
     is_json = True
     if 'Content-Type' in result['headers']:
         if result['headers']['Content-Type'] == 'text/plain':
