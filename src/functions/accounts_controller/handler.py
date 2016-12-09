@@ -1,7 +1,6 @@
-from slsrequest import BaseRequest
 import uuid
-from ...models.Account import Account
-from ...models.AccountUser import AccountUser
+from slsrequest import BaseRequest
+from ...models import Account, AccountUser
 from ...serializers import AccountSchema
 
 class AccountsController(BaseRequest):

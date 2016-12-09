@@ -1,5 +1,5 @@
 import yaml
-from conftest import dynamo_db_init, placebo_playback, placebo_record
+from conftest import dynamo_db_init, placebo_playback
 
 def test_get_method():
     handler = __import__('src.functions.lambda_proxy_controller.handler', fromlist=['handler'])
