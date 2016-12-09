@@ -1,15 +1,11 @@
 import os, json, yaml
 here = os.path.dirname(os.path.realpath(__file__))
-import placebo
-from botocore import session as boto_session
-session = boto_session.get_session()
-session.events = session.get_component('event_emitter')
-pill = placebo.attach(session, data_path=os.path.join(here, 'placebos'))
-pill.playback()
+from conftest import dynamo_db_init, placebo_playback
+from orion.providers.aws.clients import dynamo_db
 
+@placebo_playback
+@dynamo_db_init
 def test_get_method():
-    # We want to be able to access local db when building placebos
-    os.environ['USE_LOCAL_DB'] = 'True'
     # Import our module.
     run = __import__('app')
     # Get a base lambda proxy event
@@ -18,7 +14,7 @@ def test_get_method():
     # Build some context 
     context = {}
     # Run the controller
-    actual_response = run.accounts_controller(event, context, session=session)
+    actual_response = run.accounts_controller(event, context, session=dynamo_db.session)
     actual_response_body = json.loads(actual_response['body'])
     expected_response_body = yaml.load(open(here + '/expectations/test_get_method.yml'))
     assert actual_response['statusCode'] == 200, 'The response statusCode is 200'

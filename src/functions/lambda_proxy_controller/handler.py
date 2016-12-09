@@ -1,14 +1,12 @@
-from orion.providers.aws.controllers.lambda_proxy_event import (
-    get, post, handler as lambda_proxy
-)
+from orion.providers.aws.clients import dynamo_db
+import orion.providers.aws.controllers.lambda_proxy_event as lambda_proxy
+# Establish connection on container startup.
+dynamo_db.connect()
 
-@get
+@lambda_proxy.get
 def get_method(event, context, **kwargs):
     return 'GET'
 
-@post
+@lambda_proxy.post
 def post_handler(event, context, **kwargs):
     return 'POST'
-
-def handler(*args, **kwargs):
-    return lambda_proxy(*args, **kwargs)
