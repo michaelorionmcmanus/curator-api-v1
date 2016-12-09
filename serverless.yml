@@ -11,7 +11,7 @@ provider:
   stage: dev
   profile: ${{opt:profile}}
   variableSyntax: "\\${{([ :a-zA-Z0-9._,\\-\\/\\(\\)]+?)}}"
-  environment: ${{file(./app/.env.yml)}}
+  environment: ${{file(./src/.env.yml)}}
 
   iamRoleStatements:
     - Effect: Allow
@@ -46,7 +46,7 @@ custom:
 
 functions:
   AccountsController:
-    handler: run.accounts_controller
+    handler: app.accounts_controller
     events:
       - http:
          path: accounts
@@ -61,7 +61,7 @@ functions:
          integration: lambda-proxy
          cfAuthorizer: CognitoAuthorizer
   UsersController:
-    handler: run.users_controller
+    handler: app.users_controller
     events:
       - http:
           path: users/{userId}
@@ -70,7 +70,7 @@ functions:
           integration: lambda-proxy
           cfAuthorizer: CognitoAuthorizer
   InstagramAccountsAuthorizationController:
-    handler: run.instagram_accounts_authorization_controller
+    handler: app.instagram_accounts_authorization_controller
     events:
       - http:
           path: instagram-accounts/authorization
@@ -79,7 +79,7 @@ functions:
           integration: lambda-proxy
           cfAuthorizer: CognitoAuthorizer
   InstagramAccountsController:
-    handler: run.instagram_accounts_controller
+    handler: app.instagram_accounts_controller
     events:
       - http: 
           path: accounts/{accountId}/instagram-accounts
@@ -94,7 +94,7 @@ functions:
           integration: lambda-proxy
           cfAuthorizer: CognitoAuthorizer
   InstagramSubscriptionProcessor:
-    handler: run.instagram_subscription_processor
+    handler: app.instagram_subscription_processor
     events:
       - http:
           path: system/subscriptions/instagram/process

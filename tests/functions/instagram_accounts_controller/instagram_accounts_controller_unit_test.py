@@ -3,7 +3,7 @@ import responses
 
 @responses.activate
 def test_get_instagram_account_credentials_success():
-    module = __import__('app.functions.instagram_accounts_controller.handler', fromlist=['InstagramAccountsController'])
+    module = __import__('src.functions.instagram_accounts_controller.handler', fromlist=['InstagramAccountsController'])
     event = {}
     context = {}
     controller_instance = module.InstagramAccountsController(event, context)
@@ -22,7 +22,7 @@ def test_get_instagram_account_credentials_success():
 
 @responses.activate
 def test_get_instagram_account_credentials_code_used():
-    module = __import__('app.functions.instagram_accounts_controller.handler', fromlist=['InstagramAccountsController'])
+    module = __import__('src.functions.instagram_accounts_controller.handler', fromlist=['InstagramAccountsController'])
     event = {}
     context = {}
     controller_instance = module.InstagramAccountsController(event, context)

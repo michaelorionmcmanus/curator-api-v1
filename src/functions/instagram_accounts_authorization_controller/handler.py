@@ -1,5 +1,4 @@
 from slsrequest import BaseRequest
-import json, requests, arrow, uuid, re, os, boto3
 from apiclients import InstagramClient
 
 class InstagramAccountsAuthorizationController(BaseRequest):

@@ -1,9 +1,8 @@
+import os, requests
 from slsrequest import BaseRequest
-import json, arrow, uuid, re, os, boto3
-from serializers import InstagramAccountSchema
 from apiclients import InstagramClient
-from AccountCredential import AccountCredential
-import requests 
+from ...serializers import InstagramAccountSchema
+from ...models.AccountCredential import AccountCredential
 
 class InstagramAccountsController(BaseRequest):
     def __init__(self, event, context):

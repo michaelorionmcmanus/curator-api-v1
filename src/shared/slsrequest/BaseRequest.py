@@ -20,9 +20,10 @@ class BaseRequest(object):
     """
     Constructor
     """
-    def __init__(self, event={}, context={}, session=None):
+    def __init__(self, event={}, context={}, **kwargs):
         if('requestContext' in event and 'stage' in event['requestContext']):
             os.environ['STAGE'] = event['requestContext']['stage']
+        session = kwargs.pop('session', None)
         # Build a logger and attach it to the instance.
         logging.basicConfig()
         self.logger = logging.getLogger()

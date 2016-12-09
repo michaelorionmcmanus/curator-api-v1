@@ -11,14 +11,14 @@ def test_get_method():
     # We want to be able to access local db when building placebos
     os.environ['USE_LOCAL_DB'] = 'True'
     # Import our module.
-    run = __import__('run')
+    run = __import__('app')
     # Get a base lambda proxy event
     with open('base-event.yml') as data_file:
         event = yaml.load(data_file)
     # Build some context 
     context = {}
     # Run the controller
-    actual_response = run.accounts_controller(event, context, session)
+    actual_response = run.accounts_controller(event, context, session=session)
     actual_response_body = json.loads(actual_response['body'])
     expected_response_body = yaml.load(open(here + '/expectations/test_get_method.yml'))
     assert actual_response['statusCode'] == 200, 'The response statusCode is 200'

@@ -67,7 +67,6 @@ class UsersController(BaseRequest):
         else:
             self.grant_iot_access(value, event, context)
         
-        
 
     def patch_handler(self, event, context, principal_id):
         # For each operation call the method that matches the operation method 
@@ -94,6 +93,6 @@ class UsersController(BaseRequest):
             'body': {}
         }
 
-def handler(event, context):
+def handler(event, context, **kwargs):
     SlsRequestInstance = UsersController(event, context)
     return SlsRequestInstance.handler(event=event, context=context)

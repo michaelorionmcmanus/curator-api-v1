@@ -9,10 +9,12 @@ from fabric.context_managers import lcd
 import json
 import imp
 import re
-from app.shared.util.load_env import load
+from src.shared.util.load_env import load
 from flywheel import Model, Field, Engine
 import yaml
 import pytest
+from dynamo3 import DynamoDBConnection
+from collections import namedtuple
 
 # def debugsls(cmd):
 #     local('node --debug-brk=5858 ' + npm_modules + '/serverless/bin/serverless ' + cmd)
@@ -38,16 +40,16 @@ DEFAULT_LAUNCH_ITEM = {
     }
 
 # Auto generate env file if not present.
-if not os.path.isfile('./app/.env.yml'):
-    dist_env_vars = yaml.load(open('./app/.env.dist.yml'))
+if not os.path.isfile('./src/.env.yml'):
+    dist_env_vars = yaml.load(open('./src/.env.dist.yml'))
     for k, v in dist_env_vars.iteritems():
         if os.environ.get(k):
             dist_env_vars[k] = os.environ[k]
-    stream = file('./app/.env.yml', 'w')
+    stream = file('./src/.env.yml', 'w')
     yaml.safe_dump(dist_env_vars, stream)
     print yaml.dump(dist_env_vars)
 
-env_vars = yaml.load(open('./app/.env.yml'))
+env_vars = yaml.load(open('./src/.env.yml'))
 for k, v in env_vars.iteritems():
     os.environ[k] = v
 
@@ -55,14 +57,14 @@ def debugsls(cmd):
     local('node --debug-brk=5858 $NVM_BIN/serverless ' + cmd)
 
 def pip_install_dep(lib):
-    local('pip install -t app/vendored/ ' + lib + ' --upgrade')
+    local('pip install -t src/vendored/ ' + lib + ' --upgrade')
 
 def pip_uninstall_dep(lib):
-    local('pip uninstall -t app/vendored/ ' + lib)
+    local('pip uninstall -t src/vendored/ ' + lib)
 
 def pip_freeze_vendor():
     packages = []
-    for dirName, subdirList, fileList in os.walk('app/vendored'):
+    for dirName, subdirList, fileList in os.walk('src/vendored'):
         if('METADATA' in fileList):
             with open(dirName + '/METADATA') as data_file:
                 for line in data_file:
@@ -78,7 +80,7 @@ def pip_freeze_vendor():
         data_file.write('\r'.join(packages))
 
 def pip_install_vendor_deps():
-    local('pip install -t app/vendored -r vendor-requirements.txt')                 
+    local('pip install -t src/vendored -r vendor-requirements.txt')
 def test(test=None):
     os.environ['USE_LOCAL_DB'] = 'True'
     if test:
@@ -90,7 +92,7 @@ def test(test=None):
 def generate_vscode_launch_file():
     with open('.vscode/launch.json') as data_file:
         launch_data = json.load(data_file)
-    rootDir = 'app/functions'
+    rootDir = 'src/functions'
     functions = []
 
     gen_code = DEFAULT_LAUNCH_ITEM.copy()
@@ -131,7 +133,6 @@ def generate_vscode_launch_file():
         data_file.write(json.dumps(launch_data))
 
 def _init_db():
-    sys.path = ['./app/models'] + sys.path
     engine = Engine()
     # connect to local db
     engine.connect('us-west-2', host='localhost',
@@ -140,7 +141,8 @@ def _init_db():
         secret_key='anything',
         is_secure=False)
     # load models
-    modelModules = glob.glob('./app/models'+"/*.py")
+    sys.path = ['./src/models'] + sys.path
+    modelModules = glob.glob('./src/models'+"/*.py")
     models = [ basename(f)[:-3] for f in modelModules if isfile(f)]
     for modelName in models:
         if modelName != '__init__':
@@ -198,33 +200,46 @@ def generate_base_event():
     stream = file('./base-event.yml', 'w')
     yaml.safe_dump(base_event, stream)
 
+def write_schema_to_yaml(**kwargs):
+    properties = kwargs.copy()
+    table_name = "-".join(kwargs.pop('TableName').split('-')[3:])
+    properties['TableName'] = '${{self:service}}-${{opt:stage, self:provider.stage}}-%s' % table_name
+    table = {
+        'Type': 'AWS::DynamoDB::Table',
+        'Properties': properties
+    }
+    stream = file('./schemas/dynamo/{}.yml'
+                  .format(table_name), 'w')
+    yaml.safe_dump(table, stream)
 
 def generate_cf_dynamo_schema():
-    engine = _init_db()
-    tables = [table for table in engine.dynamo.list_tables()]
-    for table in tables:
-        response = engine.dynamo.describe_table(table).response
-        table_name = "-".join(response['TableName'].split('-')[3:])
-        properties = {
-            'Type': 'AWS::DynamoDB::Table',
-            'Properties': {
-                'TableName': '${{self:service}}-${{opt:stage, self:provider.stage}}-%s' % table_name,
-                'AttributeDefinitions': response['AttributeDefinitions'],
-                'KeySchema': response['KeySchema'],
-                'ProvisionedThroughput': {
-                    'ReadCapacityUnits': response['ProvisionedThroughput']['ReadCapacityUnits'],
-                    'WriteCapacityUnits': response['ProvisionedThroughput']['WriteCapacityUnits']
-                },
-                'LocalSecondaryIndexes': [{'KeySchema': item['KeySchema'], 'IndexName': item['IndexName'], 'Projection': item['Projection']} for item in response['LocalSecondaryIndexes']] if 'LocalSecondaryIndexes' in response else None,
-                'GlobalSecondaryIndexes': [{'KeySchema': item['KeySchema'], 'IndexName': item['IndexName'], 'ProvisionedThroughput': {'ReadCapacityUnits': response['ProvisionedThroughput']['ReadCapacityUnits'], 'WriteCapacityUnits': response['ProvisionedThroughput']['WriteCapacityUnits']}, 'Projection': item['Projection']} for item in response['GlobalSecondaryIndexes']] if 'GlobalSecondaryIndexes' in response else None
-            }
-        }
-        # CF doesn't appreciate null property values. So remove secondary indices if they are not defined.
-        if(not properties['Properties']['LocalSecondaryIndexes']):
-            properties['Properties'].pop('LocalSecondaryIndexes', None)
-        if(not properties['Properties']['GlobalSecondaryIndexes']):
-            properties['Properties'].pop('GlobalSecondaryIndexes', None)
+    dynamo_connection = DynamoDBConnection()
+    class FakeClient(object):
+        def create_table(self, *args, **kwargs):
+            write_schema_to_yaml(**kwargs)
+            return {}
 
-        stream = file('./schemas/dynamo/{}.yml'
-            .format(table_name), 'w')
-        yaml.safe_dump(properties, stream)
+    client = FakeClient()
+    dynamo_connection.client = client
+
+    class FakeDynamo(object):
+        def list_tables(self):
+            return []
+        def create_table(self, *args):
+            result = dynamo_connection.create_table(*args)
+        def describe_table(self, *args):
+            StatusStruct = namedtuple('Status', 'status')
+            return StatusStruct(status='ACTIVE')
+
+    dynamo = FakeDynamo()
+    engine = Engine()
+    engine.dynamo = dynamo
+
+    sys.path = ['./src/models'] + sys.path
+    modelModules = glob.glob('./src/models'+"/*.py")
+    models = [ basename(f)[:-3] for f in modelModules if isfile(f)]
+    for modelName in models:
+        if modelName != '__init__':
+            engine.register(getattr(__import__(modelName), modelName))
+
+    engine.create_schema()

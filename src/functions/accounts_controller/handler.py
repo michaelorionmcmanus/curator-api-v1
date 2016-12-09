@@ -1,12 +1,12 @@
 from slsrequest import BaseRequest
-import json, requests, arrow, uuid
-from Account import Account
-from AccountUser import AccountUser 
-from serializers import AccountSchema
+import uuid
+from ...models.Account import Account
+from ...models.AccountUser import AccountUser
+from ...serializers import AccountSchema
 
 class AccountsController(BaseRequest):
-    def __init__(self, event, context, session=None):
-        BaseRequest.__init__(self, event, context, session)
+    def __init__(self, event, context, **kwargs):
+        BaseRequest.__init__(self, event, context, **kwargs)
         self.log('Initialized AccountsController instance')
 
     # Return all accounts for owner
@@ -34,6 +34,7 @@ class AccountsController(BaseRequest):
             'body': account_schema.dump(account).data
         }
 
-def handler(event, context, session):
-    SlsRequestInstance = AccountsController(event, context, session)
+def handler(*args, **kwargs):
+    event, context = args
+    SlsRequestInstance = AccountsController(event, context, **kwargs)
     return SlsRequestInstance.handler(event=event, context=context)

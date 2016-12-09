@@ -5,7 +5,7 @@ __pycache__
 __init__.pyc
 .vscode
 .serverless
-app/vendored
+src/vendored
 node_modules
 admin.env
 *.pyc
