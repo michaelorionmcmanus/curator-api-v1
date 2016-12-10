@@ -1,14 +1,12 @@
-import os, json, yaml
+import os, json, yaml, importlib
 here = os.path.dirname(os.path.realpath(__file__))
-from conftest import dynamo_db_init, placebo_playback
-from tight.providers.aws.clients import dynamo_db
+from conftest import playback
 
-@placebo_playback
-@dynamo_db_init
-def test_get_method(app, event):
+def test_get_method(dynamo_db_session, event):
+    module = __import__('app_index')
+    playback(__file__, dynamo_db_session)
     context = {}
-    # Run the controller
-    actual_response = app.accounts_controller(event, context, session=dynamo_db.session)
+    actual_response = module.accounts_controller(event, context)
     actual_response_body = json.loads(actual_response['body'])
     expected_response_body = yaml.load(open(here + '/expectations/test_get_method.yml'))
     assert actual_response['statusCode'] == 200, 'The response statusCode is 200'

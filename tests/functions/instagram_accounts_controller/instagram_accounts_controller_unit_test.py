@@ -1,12 +1,8 @@
-import pytest
-import responses
+import pytest, responses, importlib
 
 @responses.activate
 def test_get_instagram_account_credentials_success():
-    module = __import__('app.functions.instagram_accounts_controller.handler', fromlist=['InstagramAccountsController'])
-    event = {}
-    context = {}
-    controller_instance = module.InstagramAccountsController(event, context)
+    module = importlib.import_module('app.functions.instagram_accounts_controller.handler')
     code = 'some_code'
     redirect_uri = 'http://localhost:4200/accounts/dashboard/instagram-accounts?account_id=656b0bb4-3c02-41c1-8aa3-6761973e1b91'
     expected_access_token = '2003123.538a604.85334889cbf946e289ffa647034c63d9'
@@ -16,16 +12,13 @@ def test_get_instagram_account_credentials_success():
                 status=200,
                 content_type='application/json'
                 )
-    actual_credentials = controller_instance.get_instagram_account_credentials(code, redirect_uri)
+    actual_credentials = module.get_instagram_account_credentials(code, redirect_uri)
     assert actual_credentials['access_token'] == expected_access_token
     assert actual_credentials['account_info'] == expected_account_info
 
 @responses.activate
 def test_get_instagram_account_credentials_code_used():
-    module = __import__('app.functions.instagram_accounts_controller.handler', fromlist=['InstagramAccountsController'])
-    event = {}
-    context = {}
-    controller_instance = module.InstagramAccountsController(event, context)
+    module = importlib.import_module('app.functions.instagram_accounts_controller.handler')
     code = 'some_code'
     redirect_uri = 'http://localhost:4200/accounts/dashboard/instagram-accounts?account_id=656b0bb4-3c02-41c1-8aa3-6761973e1b91'
     responses.add(responses.POST, 'https://api.instagram.com/oauth/access_token',
@@ -36,5 +29,5 @@ def test_get_instagram_account_credentials_code_used():
 
     expected_exception_message = {'body': {'errors': [{'message': u'Matching code was not found or was already used.', 'data': {'error_type': u'OAuthException'}}]}, 'statusCode': 400}
     with pytest.raises(Exception) as excinfo:
-        actual_response = controller_instance.get_instagram_account_credentials(code, redirect_uri)
+        actual_response = module.get_instagram_account_credentials(code, redirect_uri)
     assert expected_exception_message == excinfo.value.message

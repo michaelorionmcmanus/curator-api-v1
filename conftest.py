@@ -7,13 +7,13 @@ from botocore import session as boto_session
 from tight.providers.aws.clients import dynamo_db
 import placebo
 
-@pytest.fixture(scope="session", autouse=True)
-def default_env():
+def pytest_sessionstart():
     os.environ['STAGE'] = 'dev'
     os.environ['SERVERLESS_REGION'] = 'us-west-2'
     os.environ['SERVERLESS_SERVICE_NAME'] = 'curator-api-v1'
     if 'CI' not in os.environ:
         os.environ['CI'] = 'False'
+        os.environ['USE_LOCAL_DB'] = 'True'
 
 @pytest.fixture
 def app():
@@ -26,10 +26,10 @@ def event():
     return event
 
 
-def spy_on_dynamo_db(func):
-    test_path = '/'.join(func.func_globals['__file__'].split('/')[0:-1])
+def spy_on_dynamo_db(file, dynamo_db_session):
+    test_path = '/'.join(file.split('/')[0:-1])
     pills_path = '/'.join([test_path, 'placebos'])
-    pill = placebo.attach(dynamo_db.session, data_path=pills_path)
+    pill = placebo.attach(dynamo_db_session, data_path=pills_path)
     return pill
 
 def placebo_record(func):
@@ -37,15 +37,14 @@ def placebo_record(func):
     pill.record()
     return func
 
-def placebo_playback(func):
-    pill = spy_on_dynamo_db(func)
+def playback(file, dynamo_db_session):
+    pill = spy_on_dynamo_db(file, dynamo_db_session)
     pill.playback()
-    return func
+    return pill
 
-def dynamo_db_init(func):
-    if 'CI' not in os.environ:
-        os.environ['USE_LOCAL_DB'] = 'True'
+@pytest.fixture
+def dynamo_db_session():
     session = boto_session.get_session()
     session.events = session.get_component('event_emitter')
     dynamo_db.session = session
-    return func
+    return session
