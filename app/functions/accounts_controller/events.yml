@@ -1,9 +1,0 @@
-methods:
-    GET:
-      body: null
-    POST:
-      body: {"data":{"attributes":{"name":"An Account", members: []},"type":"accounts"}}
-    PATCH:
-      body:
-    DELETE:
-      body:
