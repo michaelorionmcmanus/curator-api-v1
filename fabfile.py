@@ -141,8 +141,8 @@ def _init_db():
         secret_key='anything',
         is_secure=False)
     # load models
-    sys.path = ['./src/models'] + sys.path
-    modelModules = glob.glob('./src/models'+"/*.py")
+    sys.path = ['./app/models'] + sys.path
+    modelModules = glob.glob('./app/models'+"/*.py")
     models = [ basename(f)[:-3] for f in modelModules if isfile(f)]
     for modelName in models:
         if modelName != '__init__':
@@ -235,8 +235,8 @@ def generate_cf_dynamo_schema():
     engine = Engine()
     engine.dynamo = dynamo
 
-    sys.path = ['./src/models'] + sys.path
-    modelModules = glob.glob('./src/models'+"/*.py")
+    sys.path = ['./app/models'] + sys.path
+    modelModules = glob.glob('./app/models'+"/*.py")
     models = [ basename(f)[:-3] for f in modelModules if isfile(f)]
     for modelName in models:
         if modelName != '__init__':

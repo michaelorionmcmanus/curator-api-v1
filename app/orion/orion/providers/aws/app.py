@@ -2,7 +2,7 @@ import os, importlib, inspect
 from functools import partial
 def create(current_module):
     controllers = []
-    for dirName, subdirList, fileList in os.walk('src/functions'):
+    for dirName, subdirList, fileList in os.walk('app/functions'):
         if ('handler.py' in fileList):
             controller_module_path = (dirName + '/handler').replace('/', '.')
             controller_name = controller_module_path.split('.')[-2]

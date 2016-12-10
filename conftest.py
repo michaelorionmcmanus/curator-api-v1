@@ -1,7 +1,7 @@
 # content of conftest.py
-import pytest, os, sys
+import pytest, os, sys, importlib, yaml
 here = os.path.dirname(os.path.realpath(__file__))
-sys.path = [os.path.join(here, "src/orion")] + sys.path
+sys.path = [os.path.join(here, "app/orion")] + sys.path
 
 from botocore import session as boto_session
 from orion.providers.aws.clients import dynamo_db
@@ -14,6 +14,17 @@ def default_env():
     os.environ['SERVERLESS_SERVICE_NAME'] = 'curator-api-v1'
     if 'CI' not in os.environ:
         os.environ['CI'] = 'False'
+
+@pytest.fixture
+def app():
+    return importlib.import_module('app_index')
+
+@pytest.fixture
+def event():
+    with open('base-event.yml') as data_file:
+        event = yaml.load(data_file)
+    return event
+
 
 def spy_on_dynamo_db(func):
     test_path = '/'.join(func.func_globals['__file__'].split('/')[0:-1])

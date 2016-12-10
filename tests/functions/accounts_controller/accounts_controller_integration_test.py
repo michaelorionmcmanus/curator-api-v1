@@ -5,16 +5,10 @@ from orion.providers.aws.clients import dynamo_db
 
 @placebo_playback
 @dynamo_db_init
-def test_get_method():
-    # Import our module.
-    run = __import__('app')
-    # Get a base lambda proxy event
-    with open('base-event.yml') as data_file:
-        event = yaml.load(data_file)
-    # Build some context 
+def test_get_method(app, event):
     context = {}
     # Run the controller
-    actual_response = run.accounts_controller(event, context, session=dynamo_db.session)
+    actual_response = app.accounts_controller(event, context, session=dynamo_db.session)
     actual_response_body = json.loads(actual_response['body'])
     expected_response_body = yaml.load(open(here + '/expectations/test_get_method.yml'))
     assert actual_response['statusCode'] == 200, 'The response statusCode is 200'
