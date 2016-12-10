@@ -1,5 +1,5 @@
-from orion.providers.aws.clients import dynamo_db
-import orion.providers.aws.controllers.lambda_proxy_event as lambda_proxy
+from tight.providers.aws.clients import dynamo_db
+import tight.providers.aws.controllers.lambda_proxy_event as lambda_proxy
 dynamo_db.connect()
 
 @lambda_proxy.get

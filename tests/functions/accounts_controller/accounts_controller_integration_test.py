@@ -1,7 +1,7 @@
 import os, json, yaml
 here = os.path.dirname(os.path.realpath(__file__))
 from conftest import dynamo_db_init, placebo_playback
-from orion.providers.aws.clients import dynamo_db
+from tight.providers.aws.clients import dynamo_db
 
 @placebo_playback
 @dynamo_db_init

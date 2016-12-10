@@ -1,10 +1,10 @@
 # content of conftest.py
 import pytest, os, sys, importlib, yaml
 here = os.path.dirname(os.path.realpath(__file__))
-sys.path = [os.path.join(here, "app/orion")] + sys.path
+sys.path = [os.path.join(here, "app/tight")] + sys.path
 
 from botocore import session as boto_session
-from orion.providers.aws.clients import dynamo_db
+from tight.providers.aws.clients import dynamo_db
 import placebo
 
 @pytest.fixture(scope="session", autouse=True)

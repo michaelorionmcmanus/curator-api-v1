@@ -3,8 +3,8 @@ logging.basicConfig()
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 here = os.path.dirname(os.path.realpath(__file__))
-sys.path = [os.path.join(here, "app/orion")] + sys.path
-import sys, orion.providers.aws.app as app
+sys.path = [os.path.join(here, "app/tight")] + sys.path
+import sys, tight.providers.aws.app as app
 current_module = sys.modules[__name__]
 
 try:

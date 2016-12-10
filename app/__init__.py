@@ -4,7 +4,7 @@ sys.path = [os.path.join(here, "./vendored")] + sys.path
 sys.path = [os.path.join(here, "./shared")] + sys.path
 sys.path = [os.path.join(here, "./models")] + sys.path
 sys.path = [os.path.join(here, "./serializers")] + sys.path
-sys.path = [os.path.join(here, "./orion")] + sys.path
+sys.path = [os.path.join(here, "./tight")] + sys.path
 sys.path = [os.path.join(here, "../")] + sys.path
 
 import logging
