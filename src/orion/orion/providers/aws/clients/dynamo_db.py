@@ -17,3 +17,4 @@ def connect(*args, **kwargs):
         engine.connect_to_region(os.environ['SERVERLESS_REGION'], session=session)
     else:
         engine.connect_to_region(os.environ['SERVERLESS_REGION'])
+    return engine

@@ -1,4 +1,4 @@
-import os, importlib
+import os, importlib, inspect
 from functools import partial
 def create(current_module):
     controllers = []
@@ -15,11 +15,10 @@ def create(current_module):
     for item in controllers:
         name, callback = item.popitem()
         def function(*args, **kwargs):
-            slicer = slice(1, 3)
             callback = args[0]
-            func_args = args[slicer]
+            func_args = args[1:4]
             return callback(*func_args, **kwargs)
 
-        bound_function = partial(function, callback)
+        bound_function = partial(function, *(callback, name))
         function.__name__ = name + '_module'
         setattr(current_module, name, bound_function)
