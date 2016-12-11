@@ -10,7 +10,7 @@ def app():
 
 @pytest.fixture
 def event():
-    with open('base-event.yml') as data_file:
+    with open('tests/fixtures/lambda_proxy_event.yml') as data_file:
         event = yaml.load(data_file)
     return event
 
