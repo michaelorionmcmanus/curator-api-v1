@@ -1,0 +1,5 @@
+body: '{"data": {"attributes": {"owners": ["e09a13d3-bd07-426d-98a8-86deeb0796e3"],
+  "name": "Test", "members": [], "created": "2016-12-11T03:41:32.677842+00:00"}, "type":
+  "accounts", "id": "c9247dd3-fb2c-4c65-baad-54ea44ef569e"}, "links": {"self": null}}'
+headers: {Access-Control-Allow-Origin: '*'}
+statusCode: 201

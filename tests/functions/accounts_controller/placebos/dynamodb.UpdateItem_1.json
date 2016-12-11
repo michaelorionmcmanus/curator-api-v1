@@ -1,0 +1,33 @@
+{
+    "status_code": 200, 
+    "data": {
+        "Attributes": {
+            "id": {
+                "S": "c9247dd3-fb2c-4c65-baad-54ea44ef569e"
+            }, 
+            "owners": {
+                "SS": [
+                    "e09a13d3-bd07-426d-98a8-86deeb0796e3"
+                ]
+            }, 
+            "name": {
+                "S": "Test"
+            }, 
+            "created": {
+                "N": "1481427692.677842"
+            }
+        }, 
+        "ResponseMetadata": {
+            "RetryAttempts": 0, 
+            "HTTPStatusCode": 200, 
+            "RequestId": "54f88c46-b2a0-445c-b58a-9dcb2e08b590", 
+            "HTTPHeaders": {
+                "x-amzn-requestid": "54f88c46-b2a0-445c-b58a-9dcb2e08b590", 
+                "content-length": "179", 
+                "content-type": "application/x-amz-json-1.0", 
+                "x-amz-crc32": "4105704599", 
+                "server": "Jetty(8.1.12.v20130726)"
+            }
+        }
+    }
+}

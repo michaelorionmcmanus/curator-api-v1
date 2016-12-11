@@ -1,6 +1,7 @@
 import uuid
-from ...models import Account, AccountUser
-from ...serializers import AccountSchema
+from Account import Account
+from AccountUser import AccountUser
+from AccountSchema import AccountSchema
 from tight.providers.aws.clients import dynamo_db
 import tight.providers.aws.controllers.lambda_proxy_event as lambda_proxy
 db = dynamo_db.connect()
@@ -21,7 +22,7 @@ def post_handler(*args, **kwargs):
     principal_id = kwargs.pop('principal_id', None)
     event = kwargs.pop('event')
     account_schema = AccountSchema()
-    new_account = account_schema.load(event['body'])
+    new_account = account_schema.load(event['body'] or {})
     name = new_account.data['name']
     account = Account(name, uuid.uuid4().__str__(), principal_id)
     account_user = AccountUser(principal_id, account.id, 'owner')

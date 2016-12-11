@@ -1,10 +1,8 @@
 import os, json, yaml
 here = os.path.dirname(os.path.realpath(__file__))
-from conftest import dynamo_db_init
 from tight.providers.aws.clients import dynamo_db
 
-@dynamo_db_init
-def test_get_method(app, event):
+def test_get_method(app, event, dynamo_db_session):
     context = {}
     # Run the controller
     event['queryStringParameters'] = {

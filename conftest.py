@@ -1,5 +1,5 @@
 # content of conftest.py
-import pytest, os, sys, importlib, yaml
+import pytest, os, sys, importlib, yaml, json
 here = os.path.dirname(os.path.realpath(__file__))
 sys.path = [os.path.join(here, "app/tight")] + sys.path
 
@@ -25,26 +25,41 @@ def event():
         event = yaml.load(data_file)
     return event
 
-
 def spy_on_dynamo_db(file, dynamo_db_session):
     test_path = '/'.join(file.split('/')[0:-1])
     pills_path = '/'.join([test_path, 'placebos'])
     pill = placebo.attach(dynamo_db_session, data_path=pills_path)
     return pill
 
-def placebo_record(func):
-    pill = spy_on_dynamo_db(func)
+def record(file, dynamo_db_session):
+    pill = spy_on_dynamo_db(file, dynamo_db_session)
+    os.environ['RECORD'] = 'True'
     pill.record()
-    return func
+    return pill
 
 def playback(file, dynamo_db_session):
     pill = spy_on_dynamo_db(file, dynamo_db_session)
+    os.environ['PLAYBACK'] = 'True'
     pill.playback()
     return pill
 
+def expected_response_body(dir, expectation_file, actual_response):
+    file_path = '/'.join([dir, expectation_file])
+    if 'PLAYBACK' in os.environ and os.environ['PLAYBACK'] == 'True':
+        return json.loads(yaml.load(open(file_path))['body'])
+    if 'RECORD' in os.environ and os.environ['RECORD'] == 'True':
+        stream = file(file_path, 'w')
+        yaml.safe_dump(actual_response, stream)
+        return json.loads(actual_response['body'])
+
+
 @pytest.fixture
 def dynamo_db_session():
-    session = boto_session.get_session()
-    session.events = session.get_component('event_emitter')
-    dynamo_db.session = session
-    return session
+    session =  getattr(dynamo_db, 'session') or None
+    if session:
+        return session
+    else:
+        session = boto_session.get_session()
+        session.events = session.get_component('event_emitter')
+        dynamo_db.session = session
+        return session

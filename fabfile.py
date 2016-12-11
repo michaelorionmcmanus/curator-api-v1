@@ -9,7 +9,7 @@ from fabric.context_managers import lcd
 import json
 import imp
 import re
-from src.shared.util.load_env import load
+from app.shared.util.load_env import load
 from flywheel import Model, Field, Engine
 import yaml
 import pytest
@@ -40,16 +40,16 @@ DEFAULT_LAUNCH_ITEM = {
     }
 
 # Auto generate env file if not present.
-if not os.path.isfile('./src/.env.yml'):
-    dist_env_vars = yaml.load(open('./src/.env.dist.yml'))
+if not os.path.isfile('./app/.env.yml'):
+    dist_env_vars = yaml.load(open('./app/.env.dist.yml'))
     for k, v in dist_env_vars.iteritems():
         if os.environ.get(k):
             dist_env_vars[k] = os.environ[k]
-    stream = file('./src/.env.yml', 'w')
+    stream = file('./app/.env.yml', 'w')
     yaml.safe_dump(dist_env_vars, stream)
     print yaml.dump(dist_env_vars)
 
-env_vars = yaml.load(open('./src/.env.yml'))
+env_vars = yaml.load(open('./app/.env.yml'))
 for k, v in env_vars.iteritems():
     os.environ[k] = v
 
@@ -57,14 +57,14 @@ def debugsls(cmd):
     local('node --debug-brk=5858 $NVM_BIN/serverless ' + cmd)
 
 def pip_install_dep(lib):
-    local('pip install -t src/vendored/ ' + lib + ' --upgrade')
+    local('pip install -t app/vendored/ ' + lib + ' --upgrade')
 
 def pip_uninstall_dep(lib):
-    local('pip uninstall -t src/vendored/ ' + lib)
+    local('pip uninstall -t app/vendored/ ' + lib)
 
 def pip_freeze_vendor():
     packages = []
-    for dirName, subdirList, fileList in os.walk('src/vendored'):
+    for dirName, subdirList, fileList in os.walk('app/vendored'):
         if('METADATA' in fileList):
             with open(dirName + '/METADATA') as data_file:
                 for line in data_file:
@@ -80,7 +80,7 @@ def pip_freeze_vendor():
         data_file.write('\r'.join(packages))
 
 def pip_install_vendor_deps():
-    local('pip install -t src/vendored -r vendor-requirements.txt')
+    local('pip install -t app/vendored -r vendor-requirements.txt')
 def test(test=None):
     os.environ['USE_LOCAL_DB'] = 'True'
     if test:
@@ -92,7 +92,7 @@ def test(test=None):
 def generate_vscode_launch_file():
     with open('.vscode/launch.json') as data_file:
         launch_data = json.load(data_file)
-    rootDir = 'src/functions'
+    rootDir = 'app/functions'
     functions = []
 
     gen_code = DEFAULT_LAUNCH_ITEM.copy()
