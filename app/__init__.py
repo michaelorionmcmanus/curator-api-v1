@@ -6,10 +6,3 @@ sys.path = [os.path.join(here, "./models")] + sys.path
 sys.path = [os.path.join(here, "./serializers")] + sys.path
 sys.path = [os.path.join(here, "./tight")] + sys.path
 sys.path = [os.path.join(here, "../")] + sys.path
-
-import logging
-logging.basicConfig()
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-
-logger.info('LOCKED AND LOADED')

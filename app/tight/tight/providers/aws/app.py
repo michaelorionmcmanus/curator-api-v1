@@ -1,5 +1,16 @@
-import os, importlib, inspect
+import os, importlib, traceback, sys
 from functools import partial
+from tight.core.logger import info
+
+def run():
+    try:
+        info(message='CREATING APP')
+        create(sys.modules['app_index'])
+    except Exception as e:
+        info(message='UNABLE TO RUN')
+        info(message=e)
+        traceback.print_exc()
+
 def create(current_module):
     controllers = []
     for dirName, subdirList, fileList in os.walk('app/functions'):

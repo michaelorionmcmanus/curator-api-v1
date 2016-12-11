@@ -1,0 +1,32 @@
+{
+    "status_code": 200, 
+    "data": {
+        "policies": [
+            {
+                "policyName": "curator-v1-dev-user-v2", 
+                "policyArn": "arn:aws:iot:us-west-2:818443719598:policy/curator-v1-dev-user-v2"
+            }, 
+            {
+                "policyName": "curator-v1-dev-user-v1", 
+                "policyArn": "arn:aws:iot:us-west-2:818443719598:policy/curator-v1-dev-user-v1"
+            }
+        ], 
+        "ResponseMetadata": {
+            "RetryAttempts": 0, 
+            "HTTPStatusCode": 200, 
+            "RequestId": "69598b80-bf7a-11e6-aa6b-9d1f5ba4db50", 
+            "HTTPHeaders": {
+                "x-amzn-requestid": "69598b80-bf7a-11e6-aa6b-9d1f5ba4db50", 
+                "content-length": "271", 
+                "via": "1.1 423912f2b1c5569e2fa5017167c61fa0.cloudfront.net (CloudFront)", 
+                "x-cache": "Miss from cloudfront", 
+                "x-amzn-trace-id": "Root=1-584d0bdb-a1635353909cdf9685fd58a5", 
+                "connection": "keep-alive", 
+                "x-amz-cf-id": "qRKJvP5czARBKrqt_lsWsuoS5VUOsnOf_-lcVQcxxb4ZUEuwiHfhYA==", 
+                "date": "Sun, 11 Dec 2016 08:18:35 GMT", 
+                "access-control-allow-origin": "*", 
+                "content-type": "application/json"
+            }
+        }
+    }
+}

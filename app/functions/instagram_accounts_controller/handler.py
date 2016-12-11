@@ -4,6 +4,7 @@ from ...serializers import InstagramAccountSchema
 from ...models.AccountCredential import AccountCredential
 import tight.providers.aws.controllers.lambda_proxy_event as lambda_proxy
 from tight.providers.aws.clients import dynamo_db
+
 instagram_client = InstagramClient()
 db = dynamo_db.connect()
 

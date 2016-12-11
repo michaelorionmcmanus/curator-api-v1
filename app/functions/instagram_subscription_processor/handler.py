@@ -1,20 +1,21 @@
 from slsrequest import BaseRequest
-import json, requests, arrow, uuid, re, os, boto3
+import json, requests, arrow, uuid, re, os
+import tight.providers.aws.controllers.lambda_proxy_event as lambda_proxy
+from tight.core.logger import info
+from tight.core.safeget import safeget
 
-class InstagramSubscriptionProcessor(BaseRequest):
-    def __init__(self, event, context):
-        BaseRequest.__init__(self, event, context)
-        self.log('Initialized InstagramSubscriptionProcessor instance') 
-        
-    def get_handler(self, event, context, principal_id):
-        self.log(json.dumps(event))
-        if(event['queryStringParameters']['hub_mode'] == 'subscribe'):
-            self.log('Responding to challenge. Allowing subscription for ' + event['queryStringParameters']['hub_verify_token'])
-            return { 'passthrough': event['queryStringParameters']['hub_challenge'] }
+@lambda_proxy.get
+def get_handler(*args, **kwargs):
+    event = kwargs.pop('event')
+    info(message=json.dumps(event))
+    hub_mode = safeget(event, 'queryStringParameters', 'hub_mode')
+    hub_verify_token = safeget(event, 'queryStringParameters', 'hub_verify_token')
+    hub_challenge = safeget(event, 'queryStringParameters', 'hub_challenge')
+    if(hub_mode == 'subscribe'):
+        info(message='Responding to challenge. Allowing subscription for {}'.format(hub_verify_token))
+        return { 'passthrough': hub_challenge }
 
-    def post_handler(self, event, context, principal_id):
-        self.log(json.dumps(event))
-
-def handler(event, context):
-    SlsRequestInstance = InstagramSubscriptionProcessor(event, context)
-    return SlsRequestInstance.handler(event=event, context=context)
+@lambda_proxy.post
+def post_handler(*args, **kwargs):
+    event = kwargs.pop('event')
+    info(message=json.dumps(event))

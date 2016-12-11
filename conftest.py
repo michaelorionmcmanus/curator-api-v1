@@ -1,16 +1,17 @@
 # content of conftest.py
-import pytest, os, sys, importlib, yaml, json
+import pytest, os, sys, importlib, yaml, json, boto3
 here = os.path.dirname(os.path.realpath(__file__))
 sys.path = [os.path.join(here, "app/tight")] + sys.path
 
 from botocore import session as boto_session
+from tight.providers.aws.clients import boto3_client
 from tight.providers.aws.clients import dynamo_db
 import placebo
 
 def pytest_sessionstart():
     os.environ['STAGE'] = 'dev'
     os.environ['SERVERLESS_REGION'] = 'us-west-2'
-    os.environ['SERVERLESS_SERVICE_NAME'] = 'curator-api-v1'
+    os.environ['SERVERLESS_SERVICE_NAME'] = 'curator-v1'
     if 'CI' not in os.environ:
         os.environ['CI'] = 'False'
         os.environ['USE_LOCAL_DB'] = 'True'
@@ -25,23 +26,41 @@ def event():
         event = yaml.load(data_file)
     return event
 
-def spy_on_dynamo_db(file, dynamo_db_session):
+def placebos_path(file):
     test_path = '/'.join(file.split('/')[0:-1])
-    pills_path = '/'.join([test_path, 'placebos'])
-    pill = placebo.attach(dynamo_db_session, data_path=pills_path)
+    path = '/'.join([test_path, 'placebos'])
+    return path
+
+def spy_on_session(file, session):
+    pill = placebo.attach(session, data_path=placebos_path(file))
     return pill
 
 def record(file, dynamo_db_session):
-    pill = spy_on_dynamo_db(file, dynamo_db_session)
-    os.environ['RECORD'] = 'True'
-    pill.record()
-    return pill
+    this = sys.modules[__name__]
+    if not hasattr(this, 'pill') or not hasattr(this, 'boto3_pill'):
+        boto3_session = boto3_client.session()
+        boto3_pill = spy_on_session(file, boto3_session)
+        boto3_pill.record()
+        pill = spy_on_session(file, dynamo_db_session)
+        os.environ['RECORD'] = 'True'
+        pill.record()
+        setattr(this, 'pill', pill)
+        setattr(this, 'boto3_pill', boto3_pill)
 
 def playback(file, dynamo_db_session):
-    pill = spy_on_dynamo_db(file, dynamo_db_session)
-    os.environ['PLAYBACK'] = 'True'
-    pill.playback()
-    return pill
+    this = sys.modules[__name__]
+    if not hasattr(this, 'pill') or not hasattr(this, 'boto3_pill'):
+        boto3_session = boto3_client.session()
+        boto3_pill = spy_on_session(file, boto3_session)
+        boto3_pill.playback()
+        pill = spy_on_session(file, dynamo_db_session)
+        os.environ['PLAYBACK'] = 'True'
+        pill.playback()
+        setattr(this, 'pill', pill)
+        setattr(this, 'boto3_pill', boto3_pill)
+    else:
+        getattr(this, 'pill')._data_path = placebos_path(file)
+        getattr(this, 'boto3_pill')._data_path = placebos_path(file)
 
 def expected_response_body(dir, expectation_file, actual_response):
     file_path = '/'.join([dir, expectation_file])
