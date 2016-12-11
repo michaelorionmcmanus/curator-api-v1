@@ -1,6 +1,6 @@
 import os, json
 here = os.path.dirname(os.path.realpath(__file__))
-from conftest import playback, record, expected_response_body
+from tight.core.test_helpers import playback, record, expected_response_body
 
 def test_get_method(app, dynamo_db_session, event):
     playback(__file__, dynamo_db_session)
