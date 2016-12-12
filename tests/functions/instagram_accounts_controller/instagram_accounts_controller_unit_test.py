@@ -29,5 +29,8 @@ def test_get_instagram_account_credentials_code_used():
 
     expected_exception_message = {'body': {'errors': [{'message': u'Matching code was not found or was already used.', 'data': {'error_type': u'OAuthException'}}]}, 'statusCode': 400}
     with pytest.raises(Exception) as excinfo:
-        actual_response = module.get_instagram_account_credentials(code, redirect_uri)
-    assert expected_exception_message == excinfo.value.message
+        try:
+            actual_response = module.get_instagram_account_credentials(code, redirect_uri)
+        except Exception as e:
+            assert expected_exception_message == e.message
+            raise Exception(e)
