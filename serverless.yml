@@ -23,6 +23,16 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:us-west-2:*:*"
+    - Effect: Allow
+      Action:
+        - iot:*
+      Resource:
+        - '*'
+    - Effect: Allow
+      Action:
+        - cognito-idp:*
+      Resource:
+        - '*'
 
 custom:
   cfAuthorizers:
@@ -49,6 +59,15 @@ functions:
          cors: true
          integration: lambda-proxy
          cfAuthorizer: CognitoAuthorizer
+  UsersController:
+    handler: run.users_controller
+    events:
+      - http:
+          path: users/{userId}
+          method: patch
+          cors: true
+          integration: lambda-proxy
+          cfAuthorizer: CognitoAuthorizer
 # you can add CloudFormation resource templates here
 resources:
   Resources:
